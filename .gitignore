@@ -40,6 +40,7 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+*.cache
 
 # Build results
 
@@ -214,3 +215,7 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.FileListAbsolute.txt
+*.pdb
+*.cache
+*.exe
