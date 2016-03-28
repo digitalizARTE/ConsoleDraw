@@ -12,28 +12,28 @@ namespace ConsoleDraw.Inputs
         private List<DropdownItem> DropdownItems = new List<DropdownItem>();
         public Dropdown root;
 
-        public DropdownSpread(int Xpostion, int Ypostion, List<String> options, Window parentWindow, Dropdown root)
+        public DropdownSpread(int Xpostion, int Ypostion, List<string> options, Window parentWindow, Dropdown root)
             : base(Xpostion, Ypostion, 20, options.Count(), parentWindow)
         {
-            for (var i = 0; i < options.Count(); i++)
+            for (int i = 0; i < options.Count(); i++)
             {
-                var item = new DropdownItem(options[i], Xpostion + i, "option" + i, this);
+                DropdownItem item = new DropdownItem(options[i], Xpostion + i, "option" + i, this);
 
                 item.Action = delegate() {
-                    root.Text = ((DropdownItem)CurrentlySelected).Text;
+                    root.Text = ((DropdownItem)this.CurrentlySelected).Text;
                     root.Draw();
                 };
 
-                DropdownItems.Add(item);
+                this.DropdownItems.Add(item);
             }
 
-            Inputs.AddRange(DropdownItems);
+            this.Inputs.AddRange(this.DropdownItems);
 
-            CurrentlySelected = DropdownItems.FirstOrDefault(x => x.Text == root.Text);
+            this.CurrentlySelected = this.DropdownItems.FirstOrDefault(x => x.Text == root.Text);
 
-            BackgroundColour = ConsoleColor.DarkGray;
-            Draw();
-            MainLoop();
+            this.BackgroundColour = ConsoleColor.DarkGray;
+            this.Draw();
+            this.MainLoop();
         }
     }
 }

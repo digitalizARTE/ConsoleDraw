@@ -10,27 +10,27 @@ namespace ConsoleDraw.Inputs
 {
     public class Label : Input
     {
-        private String Text = "";
+        private string Text = string.Empty;
         private ConsoleColor TextColour = ConsoleColor.Black;
         public ConsoleColor BackgroundColour = ConsoleColor.Gray;
 
-        public Label(String text, int x, int y, String iD, Window parentWindow) : base(x, y, 1, text.Count(), parentWindow, iD)
+        public Label(string text, int x, int y, string iD, Window parentWindow) : base(x, y, 1, text.Count(), parentWindow, iD)
         {
-            Text = text;
-            BackgroundColour = parentWindow.BackgroundColour;
-            Selectable = false;
+            this.Text = text;
+            this.BackgroundColour = parentWindow.BackgroundColour;
+            this.Selectable = false;
         }
 
         public override void Draw()
         {
-            WindowManager.WirteText(Text, Xpostion, Ypostion, TextColour, BackgroundColour);
+            WindowManager.WirteText(this.Text, this.Xpostion, this.Ypostion, this.TextColour, this.BackgroundColour);
         }
 
-        public void SetText(String text)
+        public void SetText(string text)
         {
-            Text = text;
-            Width = text.Count();
-            Draw();
+            this.Text = text;
+            this.Width = text.Count();
+            this.Draw();
         }
        
     }

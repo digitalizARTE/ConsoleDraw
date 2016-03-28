@@ -18,86 +18,85 @@ namespace ConsoleDraw.Windows
         private FileBrowser fileSelect;
         private Dropdown fileTypeDropdown;
 
-        public Boolean DataLoaded;
-        public String Data;
-        public String FileNameLoaded;
-        public String PathOfLoaded;
-        public Dictionary<String, String> FileTypes;
+        public bool DataLoaded;
+        public string Data;
+        public string FileNameLoaded;
+        public string PathOfLoaded;
+        public Dictionary<string, string> FileTypes;
 
-        public LoadMenu(String path, Dictionary<String, String> fileTypes, Window parentWindow)
+        public LoadMenu(string path, Dictionary<string, string> fileTypes, Window parentWindow)
             : base("Load Menu", Math.Min(6, Console.WindowHeight - 22), (Console.WindowWidth / 2) - 30, 60, 20, parentWindow)
         {
-            BackgroundColour = ConsoleColor.White;
-            FileTypes = fileTypes;
+            this.BackgroundColour = ConsoleColor.White;
+            this.FileTypes = fileTypes;
 
-            fileSelect = new FileBrowser(PostionX + 2, PostionY + 2, 56, 13, path, "fileSelect", this, true, "txt");
-            fileSelect.ChangeItem = delegate() { UpdateCurrentlySelectedFileName(); };
-            fileSelect.SelectFile = delegate() { LoadFile(); };
+            this.fileSelect = new FileBrowser(this.PostionX + 2, this.PostionY + 2, 56, 13, path, "fileSelect", this, true, "txt") { ChangeItem = this.UpdateCurrentlySelectedFileName, SelectFile = this.LoadFile };
 
-            var openLabel = new Label("Open", PostionX + 16, PostionY + 2, "openLabel", this);
-            openTxtBox = new TextBox(PostionX + 16, PostionY + 7, "openTxtBox", this, Width - 13) { Selectable = false };
+            Label openLabel = new Label("Open", this.PostionX + 16, this.PostionY + 2, "openLabel", this);
+            this.openTxtBox = new TextBox(this.PostionX + 16, this.PostionY + 7, "openTxtBox", this, this.Width - 13) { Selectable = false };
 
-            fileTypeDropdown = new Dropdown(PostionX + 18, PostionY + 40, FileTypes.Select(x => x.Value).ToList(), "fileTypeDropdown", this, 17);
-            fileTypeDropdown.OnUnselect = delegate() { UpdateFileTypeFilter(); };
+            this.fileTypeDropdown = new Dropdown(
+                this.PostionX + 18,
+                this.PostionY + 40,
+                this.FileTypes.Select(x => x.Value).ToList(),
+                "fileTypeDropdown",
+                this,
+                17) { OnUnselect = this.UpdateFileTypeFilter };
 
-            loadBtn = new Button(PostionX + 18, PostionY + 2, "Load", "loadBtn", this);
-            loadBtn.Action = delegate() { LoadFile(); };
-            cancelBtn = new Button(PostionX + 18, PostionY + 9, "Cancel", "cancelBtn", this);
-            cancelBtn.Action = delegate() { ExitWindow(); };
+            this.loadBtn = new Button(this.PostionX + 18, this.PostionY + 2, "Load", "loadBtn", this) { Action = this.LoadFile };
+            this.cancelBtn = new Button(this.PostionX + 18, this.PostionY + 9, "Cancel", "cancelBtn", this) { Action = this.ExitWindow };
+            this.Inputs.Add(this.fileSelect);
+            this.Inputs.Add(this.loadBtn);
+            this.Inputs.Add(this.cancelBtn);
+            this.Inputs.Add(openLabel);
+            this.Inputs.Add(this.openTxtBox);
+            this.Inputs.Add(this.fileTypeDropdown);
 
-            Inputs.Add(fileSelect);
-            Inputs.Add(loadBtn);
-            Inputs.Add(cancelBtn);
-            Inputs.Add(openLabel);
-            Inputs.Add(openTxtBox);
-            Inputs.Add(fileTypeDropdown);
-            
-            CurrentlySelected = fileSelect;
+            this.CurrentlySelected = this.fileSelect;
 
-            Draw();
-            MainLoop();
+            this.Draw();
+            this.MainLoop();
         }
 
         private void UpdateCurrentlySelectedFileName()
         {
-            var CurrentlySelectedFile = fileSelect.CurrentlySelectedFile;
-            openTxtBox.SetText(CurrentlySelectedFile);
+            string currentlySelectedFile = this.fileSelect.CurrentlySelectedFile;
+            this.openTxtBox.SetText(currentlySelectedFile);
         }
 
         private void UpdateFileTypeFilter()
         {
-            var filter = FileTypes.FirstOrDefault(x => x.Value == fileTypeDropdown.Text);
-            var currentFilter = FileTypes.FirstOrDefault(x => x.Key == fileSelect.FilterByExtension);
-
+            KeyValuePair<string, string> filter = this.FileTypes.FirstOrDefault(x => x.Value == this.fileTypeDropdown.Text);
+            KeyValuePair<string, string> currentFilter = this.FileTypes.FirstOrDefault(x => x.Key == this.fileSelect.FilterByExtension);
             if (currentFilter.Key != filter.Key)
             {
-                fileSelect.FilterByExtension = filter.Key;
-                fileSelect.GetFileNames();
-                fileSelect.Draw();
+                this.fileSelect.FilterByExtension = filter.Key;
+                this.fileSelect.GetFileNames();
+                this.fileSelect.Draw();
             }
         }
 
         private void LoadFile()
         {
-            if (fileSelect.CurrentlySelectedFile == "")
+            if (this.fileSelect.CurrentlySelectedFile == string.Empty)
             {
                 new Alert("No file Selected", this, "Warning");
                 return;
             }
 
-            var file = Path.Combine(fileSelect.CurrentPath, fileSelect.CurrentlySelectedFile);
-            String text = System.IO.File.ReadAllText(file);
+            string file = Path.Combine(this.fileSelect.CurrentPath, this.fileSelect.CurrentlySelectedFile);
+            string text = File.ReadAllText(file);
 
             /*var mainWindow = (MainWindow)ParentWindow;
             mainWindow.textArea.SetText(text);
             mainWindow.fileLabel.SetText(fileSelect.CurrentlySelectedFile);*/
 
-            DataLoaded = true;
-            Data = text;
-            FileNameLoaded = fileSelect.CurrentlySelectedFile;
-            PathOfLoaded = fileSelect.CurrentPath;
+            this.DataLoaded = true;
+            this.Data = text;
+            this.FileNameLoaded = this.fileSelect.CurrentlySelectedFile;
+            this.PathOfLoaded = this.fileSelect.CurrentPath;
 
-            ExitWindow();
+            this.ExitWindow();
         }
     }
 }

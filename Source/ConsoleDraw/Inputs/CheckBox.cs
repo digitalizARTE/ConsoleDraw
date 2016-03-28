@@ -21,69 +21,69 @@ namespace ConsoleDraw.Inputs
 
         public Action Action;
 
-        public CheckBox(int x, int y, String iD, Window parentWindow) : base(x, y, 1, 3, parentWindow, iD)
+        public CheckBox(int x, int y, string iD, Window parentWindow) : base(x, y, 1, 3, parentWindow, iD)
         {
-            BackgroundColour = parentWindow.BackgroundColour;
-             Selectable = true;
+            this.BackgroundColour = parentWindow.BackgroundColour;
+            this.Selectable = true;
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
             }
         }
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
+                this.Selected = false;
+                this.Draw();
             }
         }
 
         public override void Enter()
         {
-            Checked = !Checked; //Toggle Checked
+            this.Checked = !this.Checked; //Toggle Checked
 
-            Draw();
+            this.Draw();
 
-            if (Action != null) //If an action has been set
-                Action();
+            if (this.Action != null) //If an action has been set
+                this.Action();
         }
 
         public override void Draw()
         {
-            String Char = Checked ? "X" : " ";
+            string Char = this.Checked ? "X" : " ";
 
-            if(Selected)
-                WindowManager.WirteText('[' + Char + ']', Xpostion, Ypostion, SelectedTextColour, SelectedBackgroundColour);
+            if(this.Selected)
+                WindowManager.WirteText('[' + Char + ']', this.Xpostion, this.Ypostion, this.SelectedTextColour, this.SelectedBackgroundColour);
             else
-                WindowManager.WirteText('[' + Char + ']', Xpostion, Ypostion, TextColour, BackgroundColour);  
+                WindowManager.WirteText('[' + Char + ']', this.Xpostion, this.Ypostion, this.TextColour, this.BackgroundColour);  
         }
 
         public override void CursorMoveDown()
         {
-            ParentWindow.MovetoNextItemDown(Xpostion + 1, Ypostion, Width);
+            this.ParentWindow.MovetoNextItemDown(this.Xpostion + 1, this.Ypostion, this.Width);
         }
 
         public override void CursorMoveRight()
         {
-            ParentWindow.MovetoNextItemRight(Xpostion - 1, Ypostion + Width, 3);
+            this.ParentWindow.MovetoNextItemRight(this.Xpostion - 1, this.Ypostion + this.Width, 3);
 
         }
 
         public override void CursorMoveLeft()
         {
-            ParentWindow.MovetoNextItemLeft(Xpostion - 1, Ypostion, 3);
+            this.ParentWindow.MovetoNextItemLeft(this.Xpostion - 1, this.Ypostion, 3);
         }
 
         public override void CursorMoveUp()
         {
-            ParentWindow.MovetoNextItemUp(Xpostion - 1, Ypostion, Width);
+            this.ParentWindow.MovetoNextItemUp(this.Xpostion - 1, this.Ypostion, this.Width);
         }
     }
 }

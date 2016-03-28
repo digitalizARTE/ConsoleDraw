@@ -11,53 +11,57 @@ namespace ConsoleDraw.Windows
     public class Confirm : PopupWindow
     {
         private static int textLength = 46;
-        
+
         private Button okBtn;
         private Button cancelBtn;
 
         public bool Result { get; private set; }
 
-        public Confirm(Window parentWindow, String Message, String Title = "Confirm")
-            : base(Title, 6, (Console.WindowWidth / 2) - 25, 50, 5 + (int)Math.Ceiling(((Double)Message.Count() / textLength)), parentWindow)
+        public Confirm(Window parentWindow, string message, string Title = "Confirm")
+            : base(Title, 6, (Console.WindowWidth / 2) - 25, 50, 5 + (int)Math.Ceiling(((double)message.Count() / textLength)), parentWindow)
         {
-            Create(Message, parentWindow);
+            this.Create(message, parentWindow);
         }
 
-        public Confirm(String Message, Window parentWindow, ConsoleColor backgroundColour, String Title = "Message")
-            : base(Title, 6, (Console.WindowWidth / 2) - 25, 50, 5 + (int)Math.Ceiling(((Double)Message.Count() / textLength)), parentWindow)
+        public Confirm(string message, Window parentWindow, ConsoleColor backgroundColour, string Title = "message")
+            : base(Title, 6, (Console.WindowWidth / 2) - 25, 50, 5 + (int)Math.Ceiling(((double)message.Count() / textLength)), parentWindow)
         {
-            BackgroundColour = backgroundColour;
-
-            Create(Message, parentWindow);
+            this.BackgroundColour = backgroundColour;
+            this.Create(message, parentWindow);
         }
 
-        private void Create(String Message, Window parentWindow)
+        private void Create(string message, Window parentWindow)
         {
-            var count = 0;
-            while ((count * 45) < Message.Count())
+            int count = 0;
+            while ((count * 45) < message.Count())
             {
-                var splitMessage = Message.PadRight(textLength * (count + 1), ' ').Substring((count * textLength), textLength);
-                var messageLabel = new Label(splitMessage, PostionX + 2 + count, PostionY + 2, "messageLabel", this);
-                Inputs.Add(messageLabel);
-
+                string splitMessage = message.PadRight(textLength * (count + 1), ' ').Substring((count * textLength), textLength);
+                Label messageLabel = new Label(splitMessage, this.PostionX + 2 + count, this.PostionY + 2, "messageLabel", this);
+                this.Inputs.Add(messageLabel);
                 count++;
             }
 
-            okBtn = new Button(PostionX + Height - 2, PostionY + 2, "OK", "OkBtn", this);
-            okBtn.Action = delegate() { Result = true; ExitWindow(); };
+            this.okBtn = new Button(this.PostionX + this.Height - 2, this.PostionY + 2, "OK", "OkBtn", this)
+            {
+                Action = () =>
+                {
+                    this.Result = true;
+                    this.ExitWindow();
+                }
+            };
 
-            cancelBtn = new Button(PostionX + Height - 2, PostionY + 8, "Cancel", "cancelBtn", this);
-            cancelBtn.Action = delegate() { ExitWindow(); };
+            this.cancelBtn = new Button(this.PostionX + this.Height - 2, this.PostionY + 8, "Cancel", "cancelBtn", this)
+            {
+                Action = () => this.ExitWindow()
+            };
 
-            Inputs.Add(okBtn);
-            Inputs.Add(cancelBtn);
+            this.Inputs.Add(this.okBtn);
+            this.Inputs.Add(this.cancelBtn);
 
-            CurrentlySelected = okBtn;
+            this.CurrentlySelected = this.okBtn;
 
-            Draw();
-            MainLoop();
+            this.Draw();
+            this.MainLoop();
         }
-
-        
     }
 }

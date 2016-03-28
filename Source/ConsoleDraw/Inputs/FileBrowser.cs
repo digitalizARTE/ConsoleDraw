@@ -12,14 +12,14 @@ namespace ConsoleDraw.Inputs
 {
     public class FileBrowser : Input
     {
-        public String CurrentPath { get; private set; }
-        public String CurrentlySelectedFile { get; private set; }
-        private List<String> FileNames = new List<String>();
-        private List<String> Folders;
-        private List<String> Drives;
+        public string CurrentPath { get; private set; }
+        public string CurrentlySelectedFile { get; private set; }
+        private List<string> FileNames = new List<string>();
+        private List<string> Folders;
+        private List<string> Drives;
 
         public bool IncludeFiles;
-        public String FilterByExtension = "*";
+        public string FilterByExtension = "*";
 
         private ConsoleColor BackgroundColour = ConsoleColor.DarkGray;
         private ConsoleColor TextColour = ConsoleColor.Black;
@@ -27,7 +27,16 @@ namespace ConsoleDraw.Inputs
         private ConsoleColor SelectedBackgroundColour = ConsoleColor.Gray;
 
         private int cursorX;
-        private int CursorX { get { return cursorX; } set { cursorX = value; GetCurrentlySelectedFileName(); SetOffset(); } }
+        private int CursorX
+        {
+            get { return this.cursorX; }
+            set
+            {
+                this.cursorX = value;
+                this.GetCurrentlySelectedFileName();
+                this.SetOffset();
+            }
+        }
 
         private int Offset = 0;
         private bool Selected = false;
@@ -37,76 +46,152 @@ namespace ConsoleDraw.Inputs
         public Action ChangeItem;
         public Action SelectFile;
 
-        public FileBrowser(int x, int y, int width, int height, String path, String iD, Window parentWindow, bool includeFiles = false, string filterByExtension = "*") : base(x, y, height, width, parentWindow, iD)
+        public FileBrowser(int x, int y, int width, int height, string path, string iD, Window parentWindow, bool includeFiles = false, string filterByExtension = "*")
+            : base(x, y, height, width, parentWindow, iD)
         {
-            CurrentPath = path;
-            CurrentlySelectedFile = "";
-            IncludeFiles = includeFiles;
-            FilterByExtension = filterByExtension;
-            Drives = Directory.GetLogicalDrives().ToList();
+            this.CurrentPath = path;
+            this.CurrentlySelectedFile = "";
+            this.IncludeFiles = includeFiles;
+            this.FilterByExtension = filterByExtension;
+            this.Drives = Directory.GetLogicalDrives().ToList();
 
-            GetFileNames();
-            Selectable = true;
+            this.GetFileNames();
+            this.Selectable = true;
         }
 
-        
+
         public override void Draw()
-        { 
-            WindowManager.DrawColourBlock(BackgroundColour, Xpostion, Ypostion, Xpostion + Height, Ypostion + Width);
+        {
+            WindowManager.DrawColourBlock(this.BackgroundColour, this.Xpostion, this.Ypostion, this.Xpostion + this.Height, this.Ypostion + this.Width);
 
-            if (!ShowingDrive)
+            if (!this.ShowingDrive)
             {
-                var trimedPath = CurrentPath.PadRight(Width - 2, ' ');
-                trimedPath = trimedPath.Substring(trimedPath.Count() - Width + 2, Width - 2);
-                WindowManager.WirteText(trimedPath, Xpostion, Ypostion + 1, ConsoleColor.Gray, BackgroundColour);
+                string trimedPath = this.CurrentPath.PadRight(this.Width - 2, ' ');
+                trimedPath = trimedPath.Substring(trimedPath.Count() - this.Width + 2, this.Width - 2);
+                WindowManager.WirteText(
+                    trimedPath,
+                    this.Xpostion,
+                    this.Ypostion + 1,
+                    ConsoleColor.Gray,
+                    this.BackgroundColour);
             }
             else
-                WindowManager.WirteText("Drives", Xpostion, Ypostion + 1, ConsoleColor.Gray, BackgroundColour);
-
-            if (!ShowingDrive)
             {
-                var i = Offset;
-                while (i < Math.Min(Folders.Count, Height + Offset - 1))
-                {
-                    var folderName = Folders[i].PadRight(Width - 2, ' ').Substring(0, Width - 2);
+                WindowManager.WirteText("Drives", this.Xpostion, this.Ypostion + 1, ConsoleColor.Gray, this.BackgroundColour);
+            }
 
-                    if (i == CursorX)
-                        if (Selected)
-                            WindowManager.WirteText(folderName, Xpostion + i - Offset + 1, Ypostion + 1, SelectedTextColour, SelectedBackgroundColour);
+            if (!this.ShowingDrive)
+            {
+                int i = this.Offset;
+                while (i < Math.Min(this.Folders.Count, this.Height + this.Offset - 1))
+                {
+                    string folderName = this.Folders[i].PadRight(this.Width - 2, ' ').Substring(0, this.Width - 2);
+                    if (i == this.CursorX)
+                    {
+                        if (this.Selected)
+                        {
+                            WindowManager.WirteText(
+                                folderName,
+                                this.Xpostion + i - this.Offset + 1,
+                                this.Ypostion + 1,
+                                this.SelectedTextColour,
+                                this.SelectedBackgroundColour);
+                        }
                         else
-                            WindowManager.WirteText(folderName, Xpostion + i - Offset + 1, Ypostion + 1, SelectedTextColour, BackgroundColour);
+                        {
+                            WindowManager.WirteText(
+                                folderName,
+                                this.Xpostion + i - this.Offset + 1,
+                                this.Ypostion + 1,
+                                this.SelectedTextColour,
+                                this.BackgroundColour);
+                        }
+                    }
                     else
-                        WindowManager.WirteText(folderName, Xpostion + i - Offset + 1, Ypostion + 1, TextColour, BackgroundColour);
+                    {
+                        WindowManager.WirteText(
+                          folderName,
+                          this.Xpostion + i - this.Offset + 1,
+                          this.Ypostion + 1,
+                          this.TextColour,
+                          this.BackgroundColour);
+                    }
 
                     i++;
                 }
 
-                while (i < Math.Min(Folders.Count + FileNames.Count, Height + Offset - 1))
+                while (i < Math.Min(this.Folders.Count + this.FileNames.Count, this.Height + this.Offset - 1))
                 {
-                    var fileName = FileNames[i - Folders.Count].PadRight(Width - 2, ' ').Substring(0, Width - 2);
+                    string fileName = this.FileNames[i - this.Folders.Count].PadRight(this.Width - 2, ' ').Substring(0, this.Width - 2);
 
-                    if (i == CursorX)
-                        if (Selected)
-                            WindowManager.WirteText(fileName, Xpostion + i - Offset + 1, Ypostion + 1, SelectedTextColour, SelectedBackgroundColour);
+                    if (i == this.CursorX)
+                    {
+                        if (this.Selected)
+                        {
+                            WindowManager.WirteText(
+                                fileName,
+                                this.Xpostion + i - this.Offset + 1,
+                                this.Ypostion + 1,
+                                this.SelectedTextColour,
+                                this.SelectedBackgroundColour);
+                        }
                         else
-                            WindowManager.WirteText(fileName, Xpostion + i - Offset + 1, Ypostion + 1, SelectedTextColour, BackgroundColour);
+                        {
+                            WindowManager.WirteText(
+                                fileName,
+                                this.Xpostion + i - this.Offset + 1,
+                                this.Ypostion + 1,
+                                this.SelectedTextColour,
+                                this.BackgroundColour);
+                        }
+                    }
                     else
-                        WindowManager.WirteText(fileName, Xpostion + i - Offset + 1, Ypostion + 1, TextColour, BackgroundColour);
+                    {
+                        WindowManager.WirteText(
+                            fileName,
+                            this.Xpostion + i - this.Offset + 1,
+                            this.Ypostion + 1,
+                            this.TextColour,
+                            this.BackgroundColour);
+                    }
                     i++;
                 }
             }
             else
             {
-                for (var i = 0; i < Drives.Count(); i++)
+                for (int i = 0; i < this.Drives.Count(); i++)
                 {
-                    if (i == CursorX)
-                        if (Selected)
-                            WindowManager.WirteText(Drives[i], Xpostion + i - Offset + 1, Ypostion + 1, SelectedTextColour, SelectedBackgroundColour);
+                    if (i == this.CursorX)
+                    {
+                        if (this.Selected)
+                        {
+                            WindowManager.WirteText(
+                                this.Drives[i],
+                                this.Xpostion + i - this.Offset + 1,
+                                this.Ypostion + 1,
+                                this.SelectedTextColour,
+                                this.SelectedBackgroundColour);
+                        }
                         else
-                            WindowManager.WirteText(Drives[i], Xpostion + i - Offset + 1, Ypostion + 1, SelectedTextColour, BackgroundColour);
+                        {
+                            WindowManager.WirteText(
+                                this.Drives[i],
+                                this.Xpostion + i - this.Offset + 1,
+                                this.Ypostion + 1,
+                                this.SelectedTextColour,
+                                this.BackgroundColour);
+                        }
+                    }
                     else
-                        WindowManager.WirteText(Drives[i], Xpostion + i - Offset + 1, Ypostion + 1, TextColour, BackgroundColour);
-                    
+                    {
+                        WindowManager.WirteText(
+                            this.Drives[i],
+                            this.Xpostion + i - this.Offset + 1,
+                            this.Ypostion + 1,
+                            this.TextColour,
+                            this.BackgroundColour);
+                    }
+
                 }
 
             }
@@ -115,195 +200,233 @@ namespace ConsoleDraw.Inputs
 
         public void GetFileNames()
         {
-            if (ShowingDrive) //Currently Showing drives. This function should not be called!
+            if (this.ShowingDrive) //Currently Showing drives. This function should not be called!
                 return;
 
             try
             {
-                if(IncludeFiles)
-                    FileNames = Directory.GetFiles(CurrentPath, "*." + FilterByExtension).Select(path => System.IO.Path.GetFileName(path)).ToList();
-
-                Folders = Directory.GetDirectories(CurrentPath).Select(path => System.IO.Path.GetFileName(path)).ToList();
-                
-                Folders.Insert(0, "..");
-
-                if (Directory.GetParent(CurrentPath) != null)
+                if (this.IncludeFiles)
                 {
-                    AtRoot = false;
+                    this.FileNames = Directory.GetFiles(this.CurrentPath, string.Format("*.{0}", this.FilterByExtension)).Select(path => Path.GetFileName(path)).ToList();
+                }
+
+                this.Folders = Directory.GetDirectories(this.CurrentPath).Select(path => Path.GetFileName(path)).ToList();
+
+                this.Folders.Insert(0, "..");
+
+                if (Directory.GetParent(this.CurrentPath) != null)
+                {
+                    this.AtRoot = false;
 
                 }
                 else
-                    AtRoot = true;
+                {
+                    this.AtRoot = true;
+                }
 
-                if (CursorX > FileNames.Count() + Folders.Count())
-                    CursorX = 0;
+                if (this.CursorX > this.FileNames.Count() + this.Folders.Count())
+                {
+                    this.CursorX = 0;
+                }
             }
             catch (UnauthorizedAccessException e)
             {
-                throw e;
+                // throw e;
+                throw;
             }
         }
 
         private void DisplayDrives()
         {
-            ShowingDrive = true;
-            CurrentPath = "";
-            CursorX = 0;
-            Draw();
+            this.ShowingDrive = true;
+            this.CurrentPath = "";
+            this.CursorX = 0;
+            this.Draw();
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
             }
         }
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
+                this.Selected = false;
+                this.Draw();
             }
         }
 
         public override void CursorMoveDown()
         {
-            if (CursorX != Folders.Count + FileNames.Count - 1 && !ShowingDrive)
+            if (this.CursorX != this.Folders.Count + this.FileNames.Count - 1 && !this.ShowingDrive)
             {
-                CursorX++;
-                Draw();
+                this.CursorX++;
+                this.Draw();
             }
-            else if (CursorX != Drives.Count - 1 && ShowingDrive)
+            else if (this.CursorX != this.Drives.Count - 1 && this.ShowingDrive)
             {
-                CursorX++;
-                Draw();
+                this.CursorX++;
+                this.Draw();
             }
             else
-                ParentWindow.MovetoNextItemDown(Xpostion, Ypostion, Width);    
+            {
+                this.ParentWindow.MovetoNextItemDown(this.Xpostion, this.Ypostion, this.Width);
+            }
         }
 
         public override void CursorMoveUp()
         {
-            if (CursorX != 0)
+            if (this.CursorX != 0)
             {
-                CursorX--;
-                Draw();
+                this.CursorX--;
+                this.Draw();
             }
             else
-                ParentWindow.MovetoNextItemUp(Xpostion, Ypostion, Width); 
+            {
+                this.ParentWindow.MovetoNextItemUp(this.Xpostion, this.Ypostion, this.Width);
+            }
         }
 
         public override void CursorMoveRight()
         {
-            if (CursorX >= 1 && CursorX < Folders.Count && !ShowingDrive) //Folder is selected
-                GoIntoFolder();
-            else if (ShowingDrive)
-                GoIntoDrive();
-        } 
+            if (this.CursorX >= 1 && this.CursorX < this.Folders.Count && !this.ShowingDrive)
+            {
+                //Folder is selected
+                this.GoIntoFolder();
+            }
+            else if (this.ShowingDrive)
+            {
+                this.GoIntoDrive();
+            }
+        }
 
         public override void Enter()
         {
-            if (CursorX >= 1 && CursorX < Folders.Count && !ShowingDrive) //Folder is selected
-                GoIntoFolder();
-            else if (cursorX == 0 && !AtRoot) //Back is selected
-                GoToParentFolder();
-            else if (SelectFile != null && !ShowingDrive) //File is selcted
-                SelectFile();
-            else if (cursorX == 0 && AtRoot && !ShowingDrive) //Back is selected and at root, thus show drives
-                DisplayDrives();
-            else if (ShowingDrive)
-                GoIntoDrive();
-
-            
+            if (this.CursorX >= 1 && this.CursorX < this.Folders.Count && !this.ShowingDrive)
+            {
+                //Folder is selected
+                this.GoIntoFolder();
+            }
+            else if (this.cursorX == 0 && !this.AtRoot)
+            {//Back is selected
+                this.GoToParentFolder();
+            }
+            else if (this.SelectFile != null && !this.ShowingDrive)
+            {
+                //File is selcted
+                this.SelectFile();
+            }
+            else if (this.cursorX == 0 && this.AtRoot && !this.ShowingDrive)
+            {
+                //Back is selected and at root, thus show drives
+                this.DisplayDrives();
+            }
+            else if (this.ShowingDrive)
+            {
+                this.GoIntoDrive();
+            }
         }
 
         private void GoIntoDrive()
         {
-            CurrentPath = Drives[cursorX];
+            this.CurrentPath = this.Drives[this.cursorX];
 
             try
             {
-                ShowingDrive = false;
-                GetFileNames();
-                CursorX = 0;
-                Draw();
+                this.ShowingDrive = false;
+                this.GetFileNames();
+                this.CursorX = 0;
+                this.Draw();
             }
             catch (IOException e)
             {
-                CurrentPath = ""; //Change Path back to nothing
-                ShowingDrive = true;
-                new Alert(e.Message, ParentWindow, ConsoleColor.White);
+                this.CurrentPath = ""; //Change Path back to nothing
+                this.ShowingDrive = true;
+                new Alert(e.Message, this.ParentWindow, ConsoleColor.White);
             }
-        
+
         }
 
         private void GoIntoFolder()
         {
-            CurrentPath = Path.Combine(CurrentPath, Folders[cursorX]);
-            
+            this.CurrentPath = Path.Combine(this.CurrentPath, this.Folders[this.cursorX]);
+
             try
             {
-                GetFileNames();
-                CursorX = 0;
-                Draw();
+                this.GetFileNames();
+                this.CursorX = 0;
+                this.Draw();
             }
             catch (UnauthorizedAccessException e)
             {
-                CurrentPath = Directory.GetParent(CurrentPath).FullName; //Change Path back to parent
-                new Alert("Access Denied", ParentWindow, ConsoleColor.White, "Error");
+                this.CurrentPath = Directory.GetParent(this.CurrentPath).FullName; //Change Path back to parent
+                new Alert("Access Denied", this.ParentWindow, ConsoleColor.White, "Error");
             }
         }
 
         public override void CursorMoveLeft()
         {
-            if (!AtRoot)
-                GoToParentFolder();
+            if (!this.AtRoot)
+            {
+                this.GoToParentFolder();
+            }
             else
-                DisplayDrives();
+            {
+                this.DisplayDrives();
+            }
         }
 
         public override void BackSpace()
         {
-            if (!AtRoot)
-                GoToParentFolder();
+            if (!this.AtRoot)
+            {
+                this.GoToParentFolder();
+            }
         }
 
         private void GoToParentFolder()
         {
-            CurrentPath = Directory.GetParent(CurrentPath).FullName;
-            GetFileNames();
-            CursorX = 0;
-            Draw();
+            this.CurrentPath = Directory.GetParent(this.CurrentPath).FullName;
+            this.GetFileNames();
+            this.CursorX = 0;
+            this.Draw();
         }
 
         private void SetOffset()
         {
-            while (CursorX - Offset > Height - 2)
-                Offset++;
+            while (this.CursorX - this.Offset > this.Height - 2)
+            {
+                this.Offset++;
+            }
 
-            while (CursorX - Offset < 0)
-                Offset--;
+            while (this.CursorX - this.Offset < 0)
+            {
+                this.Offset--;
+            }
         }
 
         private void GetCurrentlySelectedFileName()
         {
-            if (cursorX >= Folders.Count()) //File is selected
+            if (this.cursorX >= this.Folders.Count()) //File is selected
             {
-                CurrentlySelectedFile = FileNames[cursorX - Folders.Count];
-                if (ChangeItem != null)
-                    ChangeItem();
+                this.CurrentlySelectedFile = this.FileNames[this.cursorX - this.Folders.Count];
+                if (this.ChangeItem != null)
+                {
+                    this.ChangeItem();
+                }
             }
             else
             {
-                if (CurrentlySelectedFile != "")
+                if (this.CurrentlySelectedFile != "")
                 {
-                    CurrentlySelectedFile = "";
-                    if (ChangeItem != null)
-                        ChangeItem();
+                    this.CurrentlySelectedFile = "";
+                    if (this.ChangeItem != null) this.ChangeItem();
                 }
             }
         }

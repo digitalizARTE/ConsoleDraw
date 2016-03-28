@@ -19,53 +19,52 @@ namespace ConsoleDraw.Inputs
         public List<DropdownItem> DropdownItems = new List<DropdownItem>();
         public DropdownSpread DropdownSpread;
 
-        private List<String> Options;
-        public String Text;
+        private List<string> Options;
+        public string Text;
         public int Length;
 
         public Action OnUnselect;
 
-        public Dropdown(int x, int y, List<String> options, String iD, Window parentWindow, int length = 20) : base(x, y, 1, length - 2 + 3, parentWindow, iD)
+        public Dropdown(int x, int y, List<string> options, string iD, Window parentWindow, int length = 20) : base(x, y, 1, length - 2 + 3, parentWindow, iD)
         {
-            Xpostion = x;
-            Ypostion = y;
-            Options = options;
-            Text = Options.First();
-            Length = length;
-            BackgroudColour = parentWindow.BackgroundColour;
+            this.Xpostion = x;
+            this.Ypostion = y;
+            this.Options = options;
+            this.Text = this.Options.First();
+            this.Length = length;
+            this.BackgroudColour = parentWindow.BackgroundColour;
 
-            Selectable = true;
+            this.Selectable = true;
         }
 
         public override void Draw()
         {
-            var paddedText = Text.PadRight(Length - 2, ' ').Substring(0, Length - 2);
+            string paddedText = this.Text.PadRight(this.Length - 2, ' ').Substring(0, this.Length - 2);
 
-            if (Selected)
-                WindowManager.WirteText('[' + paddedText + '▼' + ']', Xpostion, Ypostion, SelectedTextColour, SelectedBackgroundColour);
+            if (this.Selected)
+                WindowManager.WirteText('[' + paddedText + '▼' + ']', this.Xpostion, this.Ypostion, this.SelectedTextColour, this.SelectedBackgroundColour);
             else
-                WindowManager.WirteText('[' + paddedText + '▼' + ']', Xpostion, Ypostion, TextColour, BackgroudColour);
+                WindowManager.WirteText('[' + paddedText + '▼' + ']', this.Xpostion, this.Ypostion, this.TextColour, this.BackgroudColour);
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
 
-                new DropdownSpread(Xpostion + 1, Ypostion, Options, ParentWindow, this);
+                new DropdownSpread(this.Xpostion + 1, this.Ypostion, this.Options, this.ParentWindow, this);
             }
         }
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
-                if(OnUnselect != null)
-                    OnUnselect();
+                this.Selected = false;
+                this.Draw();
+                if(this.OnUnselect != null) this.OnUnselect();
             }
         }
 

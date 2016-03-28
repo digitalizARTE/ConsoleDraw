@@ -12,72 +12,65 @@ namespace ConsoleDraw.Windows
 {
     public class SaveMenu : PopupWindow
     {
-        private Button saveBtn;
-        private Button cancelBtn;
-        private TextBox openTxtBox;
-        private FileBrowser fileSelect;
-        private String Text;
+        private readonly Button saveBtn;
+        private readonly Button cancelBtn;
+        private readonly TextBox openTxtBox;
+        private readonly FileBrowser fileSelect;
+        private readonly string text;
 
-        public Boolean FileWasSaved;
-        public String FileSavedAs;
-        public String PathToFile;
+        public bool FileWasSaved;
+        public string FileSavedAs;
+        public string PathToFile;
 
-        public SaveMenu(String fileName, String path, String data, Window parentWindow)
+        public SaveMenu(string fileName, string path, string data, Window parentWindow)
             : base("Save Menu", 6, (Console.WindowWidth / 2) - 30, 60, 20, parentWindow)
         {
-            BackgroundColour = ConsoleColor.White;
-            Text = data;
+            this.BackgroundColour = ConsoleColor.White;
+            this.text = data;
+            this.fileSelect = new FileBrowser(this.PostionX + 2, this.PostionY + 2, 56, 12, path, "fileSelect", this);
+            Label openLabel = new Label("Name", this.PostionX + 16, this.PostionY + 2, "openLabel", this);
+            this.openTxtBox = new TextBox(this.PostionX + 16, this.PostionY + 7, fileName, "openTxtBox", this, this.Width - 13) { Selectable = true };
+            this.saveBtn = new Button(this.PostionX + 18, this.PostionY + 2, "Save", "loadBtn", this)
+            {
+                Action = this.SaveFile
+            };
+            this.cancelBtn = new Button(this.PostionX + 18, this.PostionY + 9, "Cancel", "cancelBtn", this)
+            {
+                Action = this.ExitWindow
+            };
 
-            fileSelect = new FileBrowser(PostionX + 2, PostionY + 2, 56, 12, path, "fileSelect", this);
-
-            var openLabel = new Label("Name", PostionX + 16, PostionY + 2, "openLabel", this);
-            openTxtBox = new TextBox(PostionX + 16, PostionY + 7, fileName, "openTxtBox", this, Width - 13) { Selectable = true };
-
-            saveBtn = new Button(PostionX + 18, PostionY + 2, "Save", "loadBtn", this);
-            saveBtn.Action = delegate() { SaveFile(); };
-            cancelBtn = new Button(PostionX + 18, PostionY + 9, "Cancel", "cancelBtn", this);
-            cancelBtn.Action = delegate() { ExitWindow(); };
-
-            Inputs.Add(fileSelect);
-            Inputs.Add(openLabel);
-            Inputs.Add(openTxtBox);
-            Inputs.Add(saveBtn);
-            Inputs.Add(cancelBtn);
-
-            CurrentlySelected = saveBtn;
-
-            Draw();
-            MainLoop();
+            this.Inputs.Add(this.fileSelect);
+            this.Inputs.Add(openLabel);
+            this.Inputs.Add(this.openTxtBox);
+            this.Inputs.Add(this.saveBtn);
+            this.Inputs.Add(this.cancelBtn);
+            this.CurrentlySelected = this.saveBtn;
+            this.Draw();
+            this.MainLoop();
         }
 
-        
+
         private void SaveFile()
         {
-            var path = fileSelect.CurrentPath;
-            var filename = openTxtBox.GetText();
-
-            var fullFile = Path.Combine(path, filename);
-
+            string path = this.fileSelect.CurrentPath;
+            string filename = this.openTxtBox.GetText();
+            string fullFile = Path.Combine(path, filename);
             try
             {
                 StreamWriter file = new StreamWriter(fullFile);
-
-                file.Write(Text);
-
+                file.Write(this.text);
                 file.Close();
 
-                FileWasSaved = true;
-                FileSavedAs = filename;
-                PathToFile = path;
+                this.FileWasSaved = true;
+                this.FileSavedAs = filename;
+                this.PathToFile = path;
 
-                ExitWindow();
+                this.ExitWindow();
             }
             catch
-            { 
+            {
                 new Alert("You do not have access", this, "Error");
             }
-
-            
         }
     }
 }

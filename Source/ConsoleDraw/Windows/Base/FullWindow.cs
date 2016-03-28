@@ -13,12 +13,12 @@ namespace ConsoleDraw.Windows.Base
         public FullWindow(int postionX, int postionY, int width, int height, Window parentWindow)
             : base(postionX, postionY, width, height, parentWindow)
         {
-            BackgroundColour = ConsoleColor.Gray;
+            this.BackgroundColour = ConsoleColor.Gray;
         }
 
         public override void ReDraw()
         {
-            WindowManager.DrawColourBlock(BackgroundColour, PostionX, PostionY, PostionX + Height, PostionY + Width); //Main Box
+            WindowManager.DrawColourBlock(this.BackgroundColour, this.PostionX, this.PostionY, this.PostionX + this.Height, this.PostionY + this.Width); //Main Box
         }
 
     }

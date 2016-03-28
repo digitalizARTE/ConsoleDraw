@@ -15,27 +15,28 @@ namespace ConsoleDraw.Inputs
         private int CursorPostion;
 
         private int cursorDisplayX;
-        private int CursorDisplayX { get { return cursorDisplayX; } set { cursorDisplayX = value; SetOffset(); } }
+        private int CursorDisplayX { get { return this.cursorDisplayX; } set {
+            this.cursorDisplayX = value;
+            this.SetOffset(); } }
 
         private int CursorDisplayY;
 
         private int Offset = 0;
-        private List<String> SplitText = new List<String>();
-        private String text = "";
-        private String Text {
+        private List<string> SplitText = new List<string>();
+        private string text = "";
+        private string Text {
             get{
-                return text;
+                return this.text;
             } 
             set {
-                if (OnChange != null && text != value)
-                    OnChange(); 
-                
-                text = value;
+                if (this.OnChange != null && this.text != value) this.OnChange();
 
-                SplitText = CreateSplitText();
+                this.text = value;
+
+                this.SplitText = this.CreateSplitText();
             }
         }
-        private String TextWithoutNewLine { get { return RemoveNewLine(Text); } }
+        private string TextWithoutNewLine { get { return this.RemoveNewLine(this.Text); } }
 
         private ConsoleColor TextColour = ConsoleColor.White;
         public ConsoleColor BackgroundColour = ConsoleColor.Blue;
@@ -44,226 +45,231 @@ namespace ConsoleDraw.Inputs
 
         public Action OnChange;
 
-        public TextArea(int x, int y, int width, int height, String iD, Window parentWindow) : base(x, y, height, width, parentWindow, iD)
+        public TextArea(int x, int y, int width, int height, string iD, Window parentWindow) : base(x, y, height, width, parentWindow, iD)
         {
-            Selectable = true;
+            this.Selectable = true;
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
             }
         }
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
+                this.Selected = false;
+                this.Draw();
             }
         }
 
         public override void AddLetter(char letter)
         {
-            String textBefore = Text.Substring(0, CursorPostion);
-            String textAfter = Text.Substring(CursorPostion, Text.Length - CursorPostion);
+            string textBefore = this.Text.Substring(0, this.CursorPostion);
+            string textAfter = this.Text.Substring(this.CursorPostion, this.Text.Length - this.CursorPostion);
 
-            Text = textBefore + letter + textAfter;
+            this.Text = textBefore + letter + textAfter;
 
-            CursorPostion++;
-            Draw();
+            this.CursorPostion++;
+            this.Draw();
         }
 
         public override void CursorMoveLeft()
         {
-            if (CursorPostion != 0)
-                CursorPostion--;
-                       
-            Draw();
+            if (this.CursorPostion != 0) this.CursorPostion--;
+
+            this.Draw();
         }
 
         public override void CursorMoveRight()
         {
-            if (CursorPostion != Text.Length)
+            if (this.CursorPostion != this.Text.Length)
             {
-                CursorPostion++;
-                Draw();
+                this.CursorPostion++;
+                this.Draw();
             }
         }
 
         public override void CursorMoveDown()
         {
-            var splitText = SplitText;
+            List<string> splitText = this.SplitText;
 
-            if (splitText.Count == CursorDisplayX + 1) //Cursor at end of text in text area
+            if (splitText.Count == this.CursorDisplayX + 1) //Cursor at end of text in text area
             {
-                ParentWindow.MovetoNextItemDown(Xpostion, Ypostion, Width);
+                this.ParentWindow.MovetoNextItemDown(this.Xpostion, this.Ypostion, this.Width);
                 return;
             }
 
-            var nextLine = splitText[CursorDisplayX + 1];
+            string nextLine = splitText[this.CursorDisplayX + 1];
 
-            var newCursor = 0;
-            for (var i = 0; i < cursorDisplayX + 1; i++)
+            int newCursor = 0;
+            for (int i = 0; i < this.cursorDisplayX + 1; i++)
             {
                 newCursor += splitText[i].Count();
             }
 
-            if (nextLine.Count() > CursorDisplayY)
-                newCursor += CursorDisplayY;
+            if (nextLine.Count() > this.CursorDisplayY)
+            {
+                newCursor += this.CursorDisplayY;
+            }
             else
-                newCursor += nextLine.Where(x => x != '\n').Count();
+            {
+                newCursor += nextLine.Count(x => x != '\n');
+            }
 
+            this.CursorPostion = newCursor;
 
-            CursorPostion = newCursor;
-
-            Draw();
+            this.Draw();
         }
 
         public override void CursorMoveUp()
         {
-            var splitText = SplitText;
+            List<string> splitText = this.SplitText;
 
-            if (0 == CursorDisplayX) //Cursor at top of text area
+            if (0 == this.CursorDisplayX) //Cursor at top of text area
             {
-                ParentWindow.MovetoNextItemUp(Xpostion, Ypostion, Width);
+                this.ParentWindow.MovetoNextItemUp(this.Xpostion, this.Ypostion, this.Width);
                 return;
             }
 
-            var nextLine = splitText[CursorDisplayX - 1];
+            string nextLine = splitText[this.CursorDisplayX - 1];
 
-            var newCursor = 0;
-            for (var i = 0; i < cursorDisplayX - 1; i++)
+            int newCursor = 0;
+            for (int i = 0; i < this.cursorDisplayX - 1; i++)
             {
                 newCursor += splitText[i].Count();
             }
 
-            if (nextLine.Count() >= CursorDisplayY)
-                newCursor += CursorDisplayY;
+            if (nextLine.Count() >= this.CursorDisplayY)
+                newCursor += this.CursorDisplayY;
             else
-                newCursor += nextLine.Where(x => x!='\n').Count();
+                newCursor += nextLine.Count(x => x!='\n');
 
-            CursorPostion = newCursor;
-            Draw();
+            this.CursorPostion = newCursor;
+            this.Draw();
         }
 
         public override void CursorToStart()
         {
-            var splitText = SplitText;
+            List<string> splitText = this.SplitText;
 
-            var newCursor = 0;
-            for (var i = 0; i < cursorDisplayX; i++)
+            int newCursor = 0;
+            for (int i = 0; i < this.cursorDisplayX; i++)
             {
                 newCursor += splitText[i].Count();
             }
 
-            CursorPostion = newCursor;
-            Draw();
+            this.CursorPostion = newCursor;
+            this.Draw();
         }
 
         public override void CursorToEnd()
         {
-            var splitText = SplitText;
-            var currentLine = splitText[cursorDisplayX];
+            List<string> splitText = this.SplitText;
+            string currentLine = splitText[this.cursorDisplayX];
 
-            var newCursor = 0;
-            for (var i = 0; i < cursorDisplayX + 1; i++)
+            int newCursor = 0;
+            for (int i = 0; i < this.cursorDisplayX + 1; i++)
             {
                 newCursor += splitText[i].Count();
             }
 
-            CursorPostion = newCursor - currentLine.Count(x => x == '\n');
-            Draw();
+            this.CursorPostion = newCursor - currentLine.Count(x => x == '\n');
+            this.Draw();
         }
 
         public override void BackSpace()
         {
-            if (CursorPostion != 0)
+            if (this.CursorPostion != 0)
             {
-                String textBefore = Text.Substring(0, CursorPostion);
-                String textAfter = Text.Substring(CursorPostion, Text.Length - CursorPostion);
+                string textBefore = this.Text.Substring(0, this.CursorPostion);
+                string textAfter = this.Text.Substring(this.CursorPostion, this.Text.Length - this.CursorPostion);
 
                 textBefore = textBefore.Substring(0, textBefore.Length - 1);
 
-                Text = textBefore + textAfter;
-                CursorPostion--;
-                Draw();
+                this.Text = textBefore + textAfter;
+                this.CursorPostion--;
+                this.Draw();
             }
         }
 
         public override void Enter()
         {
-            AddLetter('\n');
+            this.AddLetter('\n');
         }
 
-        public void SetText(String text)
+        public void SetText(string text)
         {
-            Text = text;
-            CursorPostion = 0;
-            Draw();
+            this.Text = text;
+            this.CursorPostion = 0;
+            this.Draw();
         }
 
-        public String GetText()
+        public string GetText()
         {
-            return Text;
+            return this.Text;
         }
 
         public override void Draw()
         {
-            RemoveCursor();
+            this.RemoveCursor();
 
-            UpdateCursorDisplayPostion();
+            this.UpdateCursorDisplayPostion();
 
-            var lines = SplitText;
+            List<string> lines = this.SplitText;
 
             //Draw test area
-            for (var i = Offset; i < Height + Offset; i++)
+            for (int i = this.Offset; i < this.Height + this.Offset; i++)
             {
-                var line = ' ' +  "".PadRight(Width - 1, ' ');
-                if(lines.Count > i)
-                    line = ' ' + RemoveNewLine(lines[i]).PadRight(Width - 1, ' ');
+                string line = string.Format("{0}{1}", ' ', string.Empty.PadRight(this.Width - 1, ' '));
+                if (lines.Count > i)
+                {
+                    line = ' ' + this.RemoveNewLine(lines[i]).PadRight(this.Width - 1, ' ');
+                }
 
-                WindowManager.WirteText(line, i + Xpostion - Offset, Ypostion, TextColour, BackgroundColour);
+                WindowManager.WirteText(line, i + this.Xpostion - this.Offset, this.Ypostion, this.TextColour, this.BackgroundColour);
             }
                
-            if (Selected)
-                ShowCursor();
+            if (this.Selected) this.ShowCursor();
         
             //Draw Scroll Bar
-            WindowManager.DrawColourBlock(ConsoleColor.White, Xpostion, Ypostion + Width, Xpostion + Height, Ypostion + Width + 1);
+            WindowManager.DrawColourBlock(ConsoleColor.White, this.Xpostion, this.Ypostion + this.Width, this.Xpostion + this.Height, this.Ypostion + this.Width + 1);
             
-            double linesPerPixel = (double)lines.Count() / (Height);
-            var postion = 0;
-            if(linesPerPixel > 0)
-              postion = (int)Math.Floor(cursorDisplayX / linesPerPixel);
+            double linesPerPixel = (double)lines.Count() / (this.Height);
+            int postion = 0;
+            if (linesPerPixel > 0)
+            {
+                postion = (int)Math.Floor(this.cursorDisplayX / linesPerPixel);
+            }
 
-            WindowManager.WirteText("■", Xpostion + postion, Ypostion + Width, ConsoleColor.DarkGray, ConsoleColor.White);
+            WindowManager.WirteText("■", this.Xpostion + postion, this.Ypostion + this.Width, ConsoleColor.DarkGray, ConsoleColor.White);
         }
 
-        private List<String> CreateSplitText()
+        private List<string> CreateSplitText()
         {
-            List<String> splitText = new List<String>();
+            List<string> splitText = new List<string>();
             
-            var lastSplit = 0;
-            for (var i = 0; i < Text.Count() + 1; i++)
+            int lastSplit = 0;
+            for (int i = 0; i < this.Text.Count() + 1; i++)
             {
-                if (Text.Count() > i && Text[i] == '\n')
+                if (this.Text.Count() > i && this.Text[i] == '\n')
                 {
-                    splitText.Add(Text.Substring(lastSplit, i - lastSplit + 1));
+                    splitText.Add(this.Text.Substring(lastSplit, i - lastSplit + 1));
                     lastSplit = i + 1;
                 }
-                else if (i - lastSplit == Width - 2)
+                else if (i - lastSplit == this.Width - 2)
                 {
-                    splitText.Add(Text.Substring(lastSplit, i - lastSplit));
+                    splitText.Add(this.Text.Substring(lastSplit, i - lastSplit));
                     lastSplit = i;
                 }
                 
-                if (i == Text.Count())
-                    splitText.Add(Text.Substring(lastSplit, Text.Count() - lastSplit));
+                if (i == this.Text.Count())
+                    splitText.Add(this.Text.Substring(lastSplit, this.Text.Count() - lastSplit));
             }
 
             return splitText.Select(x => x.Replace('\r', ' ')).ToList();
@@ -271,16 +277,16 @@ namespace ConsoleDraw.Inputs
 
         private void ShowCursor()
         {
-            cursor.PlaceCursor(Xpostion + CursorDisplayX - Offset, Ypostion + 1 + CursorDisplayY, (Text + ' ')[CursorPostion], BackgroundColour);
+            this.cursor.PlaceCursor(this.Xpostion + this.CursorDisplayX - this.Offset, this.Ypostion + 1 + this.CursorDisplayY, (this.Text + ' ')[this.CursorPostion], this.BackgroundColour);
         }
 
         private void UpdateCursorDisplayPostion()
         {
-            var lines = SplitText;
-            var displayX = 0;
-            var displayY = 0;
+            List<string> lines = this.SplitText;
+            int displayX = 0;
+            int displayY = 0;
 
-            for (var i = 0; i < CursorPostion; i++)
+            for (int i = 0; i < this.CursorPostion; i++)
             {
                 if (lines[displayX].Count() > displayY && lines[displayX][displayY] == '\n') //Skip NewLine characters
                 {
@@ -310,29 +316,27 @@ namespace ConsoleDraw.Inputs
                 
             }
 
-            CursorDisplayX = displayX;
-            CursorDisplayY = displayY;
+            this.CursorDisplayX = displayX;
+            this.CursorDisplayY = displayY;
         }
 
         private void RemoveCursor()
         {
-            cursor.RemoveCursor();
+            this.cursor.RemoveCursor();
         }
 
         private void SetOffset()
         {
-            while (CursorDisplayX - Offset > Height - 1)
-                Offset++;
+            while (this.CursorDisplayX - this.Offset > this.Height - 1) this.Offset++;
 
-            while (CursorDisplayX - Offset < 0)
-                Offset--;
+            while (this.CursorDisplayX - this.Offset < 0) this.Offset--;
         }
 
-        private String RemoveNewLine(String text)
+        private string RemoveNewLine(string text)
         {
-            var toReturn = "";
+            string toReturn = "";
 
-            foreach (var letter in text)
+            foreach (char letter in text)
             {
                 if (letter != '\n')
                     toReturn += letter;

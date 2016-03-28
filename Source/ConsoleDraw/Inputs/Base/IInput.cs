@@ -14,7 +14,7 @@ namespace ConsoleDraw.Inputs.Base
         public abstract void Select();
         public abstract void Unselect();
 
-        public abstract void AddLetter(Char letter);
+        public abstract void AddLetter(char letter);
         public abstract void BackSpace();
         public abstract void CursorMoveLeft();
         public abstract void CursorMoveUp();
@@ -25,6 +25,8 @@ namespace ConsoleDraw.Inputs.Base
         public abstract void Enter();
         public abstract void Tab();
 
+        public abstract void UnTab();
+
         public int Xpostion;
         public int Ypostion;
         public int Width;
@@ -32,7 +34,7 @@ namespace ConsoleDraw.Inputs.Base
 
         public bool Selectable { get; set; }
 
-        public String ID;
+        public string ID;
         public Window ParentWindow;
     }
 }

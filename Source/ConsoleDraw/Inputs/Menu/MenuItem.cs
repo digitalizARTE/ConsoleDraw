@@ -10,7 +10,7 @@ namespace ConsoleDraw.Inputs
 {
     public class MenuItem : Input
     {
-        private String Text = "";
+        private string Text = string.Empty;
         private ConsoleColor TextColour = ConsoleColor.White;
         private ConsoleColor BackgroudColour = ConsoleColor.DarkGray;
         private ConsoleColor SelectedTextColour = ConsoleColor.Black;
@@ -19,30 +19,39 @@ namespace ConsoleDraw.Inputs
         private bool Selected = false;
         public Action Action;
 
-        public MenuItem(String text, String iD, Window parentWindow)
+        public MenuItem(string text, string iD, Window parentWindow)
             : base(0, 0, 1, 0, parentWindow, iD)
         {
-            Text = text; 
+            this.Text = text;
 
-            Selectable = true;
+            this.Selectable = true;
         }
 
         public override void Draw()
         {
-            var paddedText = ('[' +Text + ']').PadRight(Width, ' ');
+            string paddedText = ('[' + this.Text + ']').PadRight(this.Width, ' ');
 
-            if (Selected)
-                WindowManager.WirteText(paddedText, Xpostion, Ypostion, SelectedTextColour, SelectedBackgroundColour);
+            if (this.Selected)
+            {
+                WindowManager.WirteText(
+                    paddedText,
+                    this.Xpostion,
+                    this.Ypostion,
+                    this.SelectedTextColour,
+                    this.SelectedBackgroundColour);
+            }
             else
-                WindowManager.WirteText(paddedText, Xpostion, Ypostion, TextColour, BackgroudColour);
+            {
+                WindowManager.WirteText(paddedText, this.Xpostion, this.Ypostion, this.TextColour, this.BackgroudColour);
+            }
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
 
                // new MenuDropdown(Xpostion + 1, Ypostion, ParentWindow);
             }
@@ -50,50 +59,50 @@ namespace ConsoleDraw.Inputs
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
+                this.Selected = false;
+                this.Draw();
             }
         }
 
         public override void BackSpace()
         {
             //ParentWindow.ParentWindow.MoveToNextItem();
-            ParentWindow.SelectFirstItem();
-            ParentWindow.ExitWindow();
+            this.ParentWindow.SelectFirstItem();
+            this.ParentWindow.ExitWindow();
         }
 
         public override void Enter()
         {
-            if (Action != null)
+            if (this.Action != null)
             {
-                ParentWindow.SelectFirstItem();
-                Action();
+                this.ParentWindow.SelectFirstItem();
+                this.Action();
             }
         }
 
         public override void CursorMoveDown()
         {
-            ParentWindow.MoveToNextItem();
+            this.ParentWindow.MoveToNextItem();
         }
         public override void CursorMoveUp()
         {
-            ParentWindow.MoveToLastItem();
+            this.ParentWindow.MoveToLastItem();
         }
 
         public override void CursorMoveRight()
         {
-            ParentWindow.SelectFirstItem();
-            ParentWindow.ExitWindow();
-            ParentWindow.ParentWindow.MoveToNextItem();
+            this.ParentWindow.SelectFirstItem();
+            this.ParentWindow.ExitWindow();
+            this.ParentWindow.ParentWindow.MoveToNextItem();
         }
 
         public override void CursorMoveLeft()
         {
-            ParentWindow.SelectFirstItem();
-            ParentWindow.ExitWindow();
-            ParentWindow.ParentWindow.MoveToLastItem();
+            this.ParentWindow.SelectFirstItem();
+            this.ParentWindow.ExitWindow();
+            this.ParentWindow.ParentWindow.MoveToLastItem();
         }
     }
 }

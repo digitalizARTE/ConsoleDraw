@@ -1,104 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ConsoleDraw.Windows.Base;
-using ConsoleDraw.Inputs;
-using ConsoleDraw.Windows;
-using System.IO;
-
-namespace TestApp.Windows
+﻿namespace TestApp.Windows
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
+    using ConsoleDraw.Inputs;
+    using ConsoleDraw.Windows;
+    using ConsoleDraw.Windows.Base;
+
     public class MainWindow : FullWindow
     {
-        public MainWindow() : base(0, 0, Console.WindowWidth, Console.WindowHeight, null)
+        public MainWindow()
+            : base(0, 0, Console.WindowWidth, Console.WindowHeight, null)
         {
-            var oneBtn = new Button(2, 2, "Button One", "oneBtn", this) { Action = delegate() { new Alert("You Clicked Button One", this, ConsoleColor.White); } };
-            var twoBtn = new Button(4, 2, "Button Two", "twoBtn", this) { Action = delegate() { new Alert("You Clicked Button Two", this, ConsoleColor.White); } };
-            var threeBtn = new Button(6, 2, "Long Alert", "threeoBtn", this) { Action = delegate() { new Alert("A web browser (commonly referred to as a browser) is a software application for retrieving, presenting and traversing information resources on the World Wide", this, ConsoleColor.White); } };
+            Button oneBtn = new Button(2, 2, "Button One", "oneBtn", this) { Action = () => new Alert("You Clicked Button One", this, ConsoleColor.White) };
+            Button twoBtn = new Button(4, 2, "Button Two", "twoBtn", this) { Action = () => new Alert("You Clicked Button Two", this, ConsoleColor.White) };
+            Button threeBtn = new Button(6, 2, "Long Alert", "threeoBtn", this) { Action = () => new Alert("A web browser (commonly referred to as a browser) is a software application for retrieving, presenting and traversing information resources on the World Wide", this, ConsoleColor.White) };
 
-            var displayAlertBtn = new Button(2, 20, "Display Alert", "displayAlertBtn", this) { Action = delegate() { new Alert("This is an Alert!", this, ConsoleColor.White); } };
-            var displayConfirmBtn = new Button(4, 20, "Display Confirm", "displayConfirmBtn", this) { Action = delegate() { new Confirm("This is a Confirm!", this, ConsoleColor.White); } };
-            var exitBtn = new Button(6, 20, "Exit", "exitBtn", this) { Action = delegate() { ExitWindow(); } };
+            Button displayAlertBtn = new Button(2, 20, "Display Alert", "displayAlertBtn", this) { Action = () => new Alert("This is an Alert!", this, ConsoleColor.White) };
+            Button displayConfirmBtn = new Button(4, 20, "Display Confirm", "displayConfirmBtn", this) { Action = () => new Confirm("This is a Confirm!", this, ConsoleColor.White) };
+            Button exitBtn = new Button(6, 20, "Exit", "exitBtn", this) { Action = () => this.ExitWindow() };
+            Button displaySettingBtn = new Button(2, 40, "Display Settings", "displaySettingsBtn", this) { Action = () => new SettingsWindow(this) };
 
-            var displaySettingBtn = new Button(2, 40, "Display Settings", "displaySettingsBtn", this) { Action = delegate() { new SettingsWindow(this); } };
-            var displaySaveBtn = new Button(4, 40, "Display Save Menu", "displaySaveMenuBtn", this) { Action = delegate() { new SaveMenu("Untitled.txt", Directory.GetCurrentDirectory(), "Test Data", this); } };
-            var displayLoadBtn = new Button(6, 40, "Display Load Menu", "displayLoadMenuBtn", this) { Action = delegate() { new LoadMenu(Directory.GetCurrentDirectory(), new Dictionary<string, string>() {{"txt", "Text Document"}, {"*","All Files"}}, this); } };
+            Button displaySaveBtn = new Button(4, 40, "Display Save Menu", "displaySaveMenuBtn", this) { Action = () => new SaveMenu("Untitled.txt", Directory.GetCurrentDirectory(), "Test Data", this) };
+            Button displayLoadBtn = new Button(6, 40, "Display Load Menu", "displayLoadMenuBtn", this) { Action = () => new LoadMenu(Directory.GetCurrentDirectory(), new Dictionary<string, string> { { "txt", "Text Document" }, { "*", "All Files" } }, this) };
 
-            var oneCheckBox = new CheckBox(10, 2, "oneCheckBox", this);
-            var oneCheckBoxLabel = new Label("Check Box One", 10, 6, "oneCheckBoxLabel", this);
-            var twoCheckBox = new CheckBox(12, 2, "twoCheckBox", this) { Checked = true };
-            var twoCheckBoxLabel = new Label("Check Box Two", 12, 6, "twoCheckBoxLabel", this);
-            var threeCheckBox = new CheckBox(14, 2, "threeCheckBox", this);
-            var threeCheckBoxLabel = new Label("Check Box Three", 14, 6, "threeCheckBoxLabel", this);
+            CheckBox oneCheckBox = new CheckBox(10, 2, "oneCheckBox", this);
+            Label oneCheckBoxLabel = new Label("Check Box One", 10, 6, "oneCheckBoxLabel", this);
+            CheckBox twoCheckBox = new CheckBox(12, 2, "twoCheckBox", this) { Checked = true };
+            Label twoCheckBoxLabel = new Label("Check Box Two", 12, 6, "twoCheckBoxLabel", this);
+            CheckBox threeCheckBox = new CheckBox(14, 2, "threeCheckBox", this);
+            Label threeCheckBoxLabel = new Label("Check Box Three", 14, 6, "threeCheckBoxLabel", this);
 
-            var groupOneLabel = new Label("Radio Button Group One", 9, 25, "oneCheckBoxLabel", this);
-            var oneRadioBtnGroupOne = new RadioButton(10, 25, "oneRadioBtnGroupOne", "groupOne", this) { Checked = true };
-            var oneRadioBtnGroupOneLabel = new Label("Radio Button One", 10, 29, "oneCheckBoxLabel", this);
-            var twoRadioBtnGroupOne = new RadioButton(12, 25, "twoRadioBtnGroupOne", "groupOne", this);
-            var twoRadioBtnGroupOneLabel = new Label("Radio Button Two", 12, 29, "oneCheckBoxLabel", this);
-            var threeRadioBtnGroupOne = new RadioButton(14, 25, "threeRadioBtnGroupOne", "groupOne", this);
-            var threeRadioBtnGroupOneLabel = new Label("Radio Button Three", 14, 29, "oneCheckBoxLabel", this);
+            Label groupOneLabel = new Label("Radio Button Group One", 9, 25, "oneCheckBoxLabel", this);
+            RadioButton oneRadioBtnGroupOne = new RadioButton(10, 25, "oneRadioBtnGroupOne", "groupOne", this) { Checked = true };
+            Label oneRadioBtnGroupOneLabel = new Label("Radio Button One", 10, 29, "oneCheckBoxLabel", this);
+            RadioButton twoRadioBtnGroupOne = new RadioButton(12, 25, "twoRadioBtnGroupOne", "groupOne", this);
+            Label twoRadioBtnGroupOneLabel = new Label("Radio Button Two", 12, 29, "oneCheckBoxLabel", this);
+            RadioButton threeRadioBtnGroupOne = new RadioButton(14, 25, "threeRadioBtnGroupOne", "groupOne", this);
+            Label threeRadioBtnGroupOneLabel = new Label("Radio Button Three", 14, 29, "oneCheckBoxLabel", this);
 
-            var groupTwoLabel = new Label("Radio Button Group Two", 9, 50, "oneCheckBoxLabel", this);
-            var oneRadioBtnGroupTwo = new RadioButton(10, 50, "oneRadioBtnGroupTwo", "groupTwo", this) { Checked = true };
-            var twoRadioBtnGroupTwo = new RadioButton(12, 50, "twoRadioBtnGroupTwo", "groupTwo", this);
-            var threeRadioBtnGroupTwo = new RadioButton(14, 50, "threeRadioBtnGroupTwo", "groupTwo", this);
+            Label groupTwoLabel = new Label("Radio Button Group Two", 9, 50, "oneCheckBoxLabel", this);
+            RadioButton oneRadioBtnGroupTwo = new RadioButton(10, 50, "oneRadioBtnGroupTwo", "groupTwo", this) { Checked = true };
+            RadioButton twoRadioBtnGroupTwo = new RadioButton(12, 50, "twoRadioBtnGroupTwo", "groupTwo", this);
+            RadioButton threeRadioBtnGroupTwo = new RadioButton(14, 50, "threeRadioBtnGroupTwo", "groupTwo", this);
 
-            var textAreaLabel = new Label("Text Area", 16, 2, "textAreaLabel", this);
-            var textArea = new TextArea(17, 2, 60, 6, "txtArea", this);
+            Label textAreaLabel = new Label("Text Area", 16, 2, "textAreaLabel", this);
+            TextArea textArea = new TextArea(17, 2, 60, 6, "txtArea", this);
             textArea.BackgroundColour = ConsoleColor.DarkGray;
 
-            var txtBoxLabel = new Label("Text Box", 24, 2, "txtBoxLabel", this);
-            var txtBox = new TextBox(24, 11, "txtBox", this);
+            Label txtBoxLabel = new Label("Text Box", 24, 2, "txtBoxLabel", this);
+            TextBox txtBox = new TextBox(24, 11, "txtBox", this);
 
-            var fileSelect = new FileBrowser(26, 2, 40, 10, Directory.GetCurrentDirectory(), "fileSelect", this, true);
+            FileBrowser fileSelect = new FileBrowser(26, 2, 40, 10, Directory.GetCurrentDirectory(), "fileSelect", this, true);
 
-            Inputs.Add(oneBtn);
-            Inputs.Add(twoBtn);
-            Inputs.Add(threeBtn);
-            Inputs.Add(oneCheckBox);
-            Inputs.Add(oneCheckBoxLabel);
-            Inputs.Add(twoCheckBox);
-            Inputs.Add(twoCheckBoxLabel);
-            Inputs.Add(threeCheckBox);
-            Inputs.Add(threeCheckBoxLabel);
+            this.Inputs.Add(oneBtn);
+            this.Inputs.Add(twoBtn);
+            this.Inputs.Add(threeBtn);
+            this.Inputs.Add(oneCheckBox);
+            this.Inputs.Add(oneCheckBoxLabel);
+            this.Inputs.Add(twoCheckBox);
+            this.Inputs.Add(twoCheckBoxLabel);
+            this.Inputs.Add(threeCheckBox);
+            this.Inputs.Add(threeCheckBoxLabel);
 
-            Inputs.Add(displayAlertBtn);
-            Inputs.Add(displayConfirmBtn);
-            Inputs.Add(exitBtn);
+            this.Inputs.Add(displayAlertBtn);
+            this.Inputs.Add(displayConfirmBtn);
+            this.Inputs.Add(exitBtn);
 
-            Inputs.Add(groupOneLabel);
-            Inputs.Add(oneRadioBtnGroupOne);
-            Inputs.Add(oneRadioBtnGroupOneLabel);
-            Inputs.Add(twoRadioBtnGroupOne);
-            Inputs.Add(twoRadioBtnGroupOneLabel);
-            Inputs.Add(threeRadioBtnGroupOne);
-            Inputs.Add(threeRadioBtnGroupOneLabel);
+            this.Inputs.Add(groupOneLabel);
+            this.Inputs.Add(oneRadioBtnGroupOne);
+            this.Inputs.Add(oneRadioBtnGroupOneLabel);
+            this.Inputs.Add(twoRadioBtnGroupOne);
+            this.Inputs.Add(twoRadioBtnGroupOneLabel);
+            this.Inputs.Add(threeRadioBtnGroupOne);
+            this.Inputs.Add(threeRadioBtnGroupOneLabel);
 
-            Inputs.Add(displaySettingBtn);
-            Inputs.Add(displaySaveBtn);
-            Inputs.Add(displayLoadBtn);
+            this.Inputs.Add(displaySettingBtn);
+            this.Inputs.Add(displaySaveBtn);
+            this.Inputs.Add(displayLoadBtn);
 
-            Inputs.Add(groupTwoLabel);
-            Inputs.Add(oneRadioBtnGroupTwo);
-            Inputs.Add(twoRadioBtnGroupTwo);
-            Inputs.Add(threeRadioBtnGroupTwo);
+            this.Inputs.Add(groupTwoLabel);
+            this.Inputs.Add(oneRadioBtnGroupTwo);
+            this.Inputs.Add(twoRadioBtnGroupTwo);
+            this.Inputs.Add(threeRadioBtnGroupTwo);
 
-            Inputs.Add(textAreaLabel);
-            Inputs.Add(textArea);
+            this.Inputs.Add(textAreaLabel);
+            this.Inputs.Add(textArea);
 
-            Inputs.Add(txtBoxLabel);
-            Inputs.Add(txtBox);
+            this.Inputs.Add(txtBoxLabel);
+            this.Inputs.Add(txtBox);
 
-            Inputs.Add(fileSelect);
+            this.Inputs.Add(fileSelect);
 
-            CurrentlySelected = oneBtn;
+            this.CurrentlySelected = oneBtn;
 
-            Draw();
-            MainLoop();
+            this.Draw();
+            this.MainLoop();
         }
-
     }
 }

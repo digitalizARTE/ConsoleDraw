@@ -8,23 +8,22 @@ namespace ConsoleDraw.Windows.Base
 {
     public class PopupWindow : Window
     {
-        protected String Title;
+        protected string Title;
 
         protected ConsoleColor TitleBarColour = ConsoleColor.DarkGray;
         protected ConsoleColor TitleColour = ConsoleColor.Black;
 
-        public PopupWindow(String title, int postionX, int postionY, int width, int height, Window parentWindow)
+        public PopupWindow(string title, int postionX, int postionY, int width, int height, Window parentWindow)
             : base(postionX, postionY, width, height, parentWindow)
         {
-            Title = title;
+            this.Title = title;
         }
 
         public override void ReDraw()
         {
-            WindowManager.DrawColourBlock(TitleBarColour, PostionX, PostionY, PostionX + 1, PostionY + Width); //Title Bar
-            WindowManager.WirteText(' ' + Title + ' ', PostionX, PostionY + 2, TitleColour, BackgroundColour);
-
-            WindowManager.DrawColourBlock(BackgroundColour, PostionX + 1, PostionY, PostionX + Height, PostionY + Width); //Main Box
+            WindowManager.DrawColourBlock(this.TitleBarColour, this.PostionX, this.PostionY, this.PostionX + 1, this.PostionY + this.Width); //Title Bar
+            WindowManager.WirteText(string.Format("{0}{1}{0}", ' ', this.Title), this.PostionX, this.PostionY + 2, this.TitleColour, this.BackgroundColour);
+            WindowManager.DrawColourBlock(this.BackgroundColour, this.PostionX + 1, this.PostionY, this.PostionX + this.Height, this.PostionY + this.Width); //Main Box
         }
 
     }

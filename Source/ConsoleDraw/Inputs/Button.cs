@@ -10,7 +10,7 @@ namespace ConsoleDraw.Inputs
 {
     public class Button : Input
     {
-        private String Text;
+        private string Text;
         public ConsoleColor BackgroundColour = ConsoleColor.Gray;
         private ConsoleColor TextColour = ConsoleColor.Black;
 
@@ -21,64 +21,64 @@ namespace ConsoleDraw.Inputs
 
         public Action Action;
 
-        public Button(int x, int y, String text, String iD, Window parentWindow) : base(x, y, 1, text.Count() + 2, parentWindow, iD)
+        public Button(int x, int y, string text, string iD, Window parentWindow) : base(x, y, 1, text.Count() + 2, parentWindow, iD)
         {
-            Text = text;
-            BackgroundColour = parentWindow.BackgroundColour;
-            Selectable = true;
+            this.Text = text;
+            this.BackgroundColour = parentWindow.BackgroundColour;
+            this.Selectable = true;
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
             }
         }
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
+                this.Selected = false;
+                this.Draw();
             }
         }
 
         public override void Enter()
         {
-            if (Action != null) //If an action has been set
-                Action();
+            if (this.Action != null) //If an action has been set
+                this.Action();
         }
 
         public override void Draw()
         {
-            if(Selected)
-                WindowManager.WirteText('['+Text+']', Xpostion, Ypostion, SelectedTextColour, SelectedBackgroundColour);
+            if(this.Selected)
+                WindowManager.WirteText('['+ this.Text+']', this.Xpostion, this.Ypostion, this.SelectedTextColour, this.SelectedBackgroundColour);
             else
-                WindowManager.WirteText('[' + Text + ']', Xpostion, Ypostion, TextColour, BackgroundColour);  
+                WindowManager.WirteText('[' + this.Text + ']', this.Xpostion, this.Ypostion, this.TextColour, this.BackgroundColour);  
         }
         
         public override void CursorMoveDown()
         {
-            ParentWindow.MovetoNextItemDown(Xpostion, Ypostion , Width);
+            this.ParentWindow.MovetoNextItemDown(this.Xpostion, this.Ypostion , this.Width);
         }
 
         public override void CursorMoveRight()
         {
-            ParentWindow.MovetoNextItemRight(Xpostion - 1, Ypostion + Width, 3);
+            this.ParentWindow.MovetoNextItemRight(this.Xpostion - 1, this.Ypostion + this.Width, 3);
 
         }
 
         public override void CursorMoveLeft()
         {
-            ParentWindow.MovetoNextItemLeft(Xpostion - 1, Ypostion, 3);
+            this.ParentWindow.MovetoNextItemLeft(this.Xpostion - 1, this.Ypostion, 3);
         }
 
         public override void CursorMoveUp()
         {
-            ParentWindow.MovetoNextItemUp(Xpostion, Ypostion, Width);
+            this.ParentWindow.MovetoNextItemUp(this.Xpostion, this.Ypostion, this.Width);
         }
     }
 }

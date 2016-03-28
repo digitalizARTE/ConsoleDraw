@@ -9,32 +9,28 @@ namespace ConsoleDraw.Inputs
 {
     public class MenuDropdown : FullWindow
     {
-        private List<MenuItem> MenuItems;
-        
-        public MenuDropdown(int Xpostion, int Ypostion, List<MenuItem> menuItems, Window parentWindow)
-            : base(Xpostion, Ypostion, 20, menuItems.Count() + 2, parentWindow)
-        {
+        private readonly List<MenuItem> menuItems;
 
-            for (var i = 0; i < menuItems.Count(); i++)
+        public MenuDropdown(int xpostion, int ypostion, List<MenuItem> menuItems, Window parentWindow)
+            : base(xpostion, ypostion, 20, menuItems.Count() + 2, parentWindow)
+        {
+            for (int i = 0; i < menuItems.Count(); i++)
             {
                 menuItems[i].ParentWindow = this;
                 menuItems[i].Width = this.Width - 2;
-                menuItems[i].Xpostion = Xpostion + i + 1;
+                menuItems[i].Xpostion = xpostion + i + 1;
                 menuItems[i].Ypostion = this.PostionY + 1;
             }
 
-            MenuItems = menuItems;
+            this.menuItems = menuItems;
 
+            this.Inputs.AddRange(this.menuItems);
 
-            Inputs.AddRange(MenuItems);
-            
-            CurrentlySelected = MenuItems.FirstOrDefault();
+            this.CurrentlySelected = this.menuItems.FirstOrDefault();
 
-            BackgroundColour = ConsoleColor.DarkGray;
-            Draw();
-            MainLoop();
+            this.BackgroundColour = ConsoleColor.DarkGray;
+            this.Draw();
+            this.MainLoop();
         }
-
-        
     }
 }

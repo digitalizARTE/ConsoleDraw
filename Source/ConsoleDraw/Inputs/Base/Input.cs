@@ -9,19 +9,19 @@ namespace ConsoleDraw.Inputs.Base
 {
     public class Input : IInput
     {
-        public Input(int xPostion, int yPostion, int height, int width, Window parentWindow, String iD)
+        public Input(int xPostion, int yPostion, int height, int width, Window parentWindow, string iD)
         {
-            ParentWindow = parentWindow;
-            ID = iD;
+            this.ParentWindow = parentWindow;
+            this.ID = iD;
 
-            Xpostion = xPostion;
-            Ypostion = yPostion;
+            this.Xpostion = xPostion;
+            this.Ypostion = yPostion;
 
-            Height = height;
-            Width = width;
+            this.Height = height;
+            this.Width = width;
         }
 
-        public override void AddLetter(Char letter) { }
+        public override void AddLetter(char letter) { }
         public override void BackSpace() { }
         public override void CursorMoveLeft() { }
         public override void CursorMoveRight() { }
@@ -31,7 +31,12 @@ namespace ConsoleDraw.Inputs.Base
         public override void CursorToEnd() { }
         public override void Enter() { }
         public override void Tab() {
-            ParentWindow.MoveToNextItem();
+            this.ParentWindow.MoveToNextItem();
+        }
+
+        public override void UnTab()
+        {
+            this.ParentWindow.MoveToPrevItem();
         }
         
         public override void Unselect() { }

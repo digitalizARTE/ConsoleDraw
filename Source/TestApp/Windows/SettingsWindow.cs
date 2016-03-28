@@ -13,41 +13,40 @@ namespace TestApp.Windows
         public SettingsWindow(Window parentWindow)
             : base("Settings", 6, 10, 80, 20, parentWindow)
         {
-            BackgroundColour = ConsoleColor.White;
+            this.BackgroundColour = ConsoleColor.White;
 
-            var appTitleLabel = new Label("App Title", 8, 12, "appTitleLabel", this);
-            var appTitleTxtBox = new TextBox(8, 25, Console.Title, "appTitleTxtBox", this, 10);
+            Label appTitleLabel = new Label("App Title", 8, 12, "appTitleLabel", this);
+            TextBox appTitleTxtBox = new TextBox(8, 25, Console.Title, "appTitleTxtBox", this, 10);
 
-            var saveOnExitLabel = new Label("Save On Exit", 10, 12, "saveOnExitLabel", this);
-            var saveOneExitChkBox = new CheckBox(10, 25, "saveOnExitCheckBox", this);
+            Label saveOnExitLabel = new Label("Save On Exit", 10, 12, "saveOnExitLabel", this);
+            CheckBox saveOneExitChkBox = new CheckBox(10, 25, "saveOnExitCheckBox", this);
 
-            var byAllLabel = new Label("For All", 12, 12, "forAll", this);
-            var byAllRadioBtn = new RadioButton(12, 25, "byAllRadioBtn", "Users", this) { Checked = true };
-            var justYouLabel = new Label("Just You", 14, 12, "justYou", this);
-            var justYouRadioBtn = new RadioButton(14, 25, "justYouRadioBtn", "Users", this);
+            Label byAllLabel = new Label("For All", 12, 12, "forAll", this);
+            RadioButton byAllRadioBtn = new RadioButton(12, 25, "byAllRadioBtn", "Users", this) { Checked = true };
+            Label justYouLabel = new Label("Just You", 14, 12, "justYou", this);
+            RadioButton justYouRadioBtn = new RadioButton(14, 25, "justYouRadioBtn", "Users", this);
 
-            var applyBtn = new Button(24, 12, "Apply", "exitBtn", this) { Action = delegate() { ExitWindow(); } };
-            var exitBtn = new Button(24, 20, "Exit", "exitBtn", this) { Action = delegate() { ExitWindow(); } };
+            Button applyBtn = new Button(24, 12, "Apply", "exitBtn", this) { Action = () => this.ExitWindow() };
+            Button exitBtn = new Button(24, 20, "Exit", "exitBtn", this) { Action = () => this.ExitWindow() };
 
-            Inputs.Add(appTitleLabel);
-            Inputs.Add(appTitleTxtBox);
+            this.Inputs.Add(appTitleLabel);
+            this.Inputs.Add(appTitleTxtBox);
 
-            Inputs.Add(saveOnExitLabel);
-            Inputs.Add(saveOneExitChkBox);
+            this.Inputs.Add(saveOnExitLabel);
+            this.Inputs.Add(saveOneExitChkBox);
 
-            Inputs.Add(byAllLabel);
-            Inputs.Add(byAllRadioBtn);
-            Inputs.Add(justYouLabel);
-            Inputs.Add(justYouRadioBtn);
+            this.Inputs.Add(byAllLabel);
+            this.Inputs.Add(byAllRadioBtn);
+            this.Inputs.Add(justYouLabel);
+            this.Inputs.Add(justYouRadioBtn);
 
-            Inputs.Add(applyBtn);
-            Inputs.Add(exitBtn);
-            
-            
-            CurrentlySelected = exitBtn;
+            this.Inputs.Add(applyBtn);
+            this.Inputs.Add(exitBtn);
 
-            Draw();
-            MainLoop();
+            this.CurrentlySelected = exitBtn;
+
+            this.Draw();
+            this.MainLoop();
         }
 
 

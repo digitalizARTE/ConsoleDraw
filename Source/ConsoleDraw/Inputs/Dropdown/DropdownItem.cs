@@ -10,7 +10,7 @@ namespace ConsoleDraw.Inputs
 {
     public class DropdownItem : Input
     {
-        public String Text = "";
+        public string Text = "";
         private ConsoleColor TextColour = ConsoleColor.White;
         private ConsoleColor BackgroudColour = ConsoleColor.DarkGray;
         private ConsoleColor SelectedTextColour = ConsoleColor.Black;
@@ -19,69 +19,68 @@ namespace ConsoleDraw.Inputs
         private bool Selected = false;
         public Action Action;
 
-        public DropdownItem(String text, int x, String iD, Window parentWindow) : base(x, parentWindow.PostionY + 1, 1, parentWindow.Width - 2, parentWindow, iD)
+        public DropdownItem(string text, int x, string iD, Window parentWindow) : base(x, parentWindow.PostionY + 1, 1, parentWindow.Width - 2, parentWindow, iD)
         {
-            Text = text;
+            this.Text = text;
 
-            Selectable = true;
+            this.Selectable = true;
         }
 
         public override void Draw()
         {
-            var paddedText = (Text).PadRight(Width, ' ');
+            string paddedText = (this.Text).PadRight(this.Width, ' ');
 
-            if (Selected)
-                WindowManager.WirteText(paddedText, Xpostion, Ypostion, SelectedTextColour, SelectedBackgroundColour);
+            if (this.Selected)
+                WindowManager.WirteText(paddedText, this.Xpostion, this.Ypostion, this.SelectedTextColour, this.SelectedBackgroundColour);
             else
-                WindowManager.WirteText(paddedText, Xpostion, Ypostion, TextColour, BackgroudColour);
+                WindowManager.WirteText(paddedText, this.Xpostion, this.Ypostion, this.TextColour, this.BackgroudColour);
         }
 
         public override void Select()
         {
-            if (!Selected)
+            if (!this.Selected)
             {
-                Selected = true;
-                Draw();
+                this.Selected = true;
+                this.Draw();
 
-                if (Action != null)
-                    Action();
+                if (this.Action != null) this.Action();
             }
         }
 
         public override void Unselect()
         {
-            if (Selected)
+            if (this.Selected)
             {
-                Selected = false;
-                Draw();
+                this.Selected = false;
+                this.Draw();
             }
         }
 
         public override void BackSpace()
         {
-            ParentWindow.SelectFirstItem();
-            ParentWindow.ExitWindow();
+            this.ParentWindow.SelectFirstItem();
+            this.ParentWindow.ExitWindow();
         }
 
         public override void CursorMoveDown()
         {
-            ParentWindow.MoveToNextItem();
+            this.ParentWindow.MoveToNextItem();
         }
         public override void CursorMoveUp()
         {
-            ParentWindow.MoveToLastItem();
+            this.ParentWindow.MoveToLastItem();
         }
 
         public override void CursorMoveRight()
         {
-            ParentWindow.ExitWindow();
-            ParentWindow.ParentWindow.MoveToNextItem();
+            this.ParentWindow.ExitWindow();
+            this.ParentWindow.ParentWindow.MoveToNextItem();
         }
 
         public override void CursorMoveLeft()
         {
-            ParentWindow.ExitWindow();
-            ParentWindow.ParentWindow.MoveToLastItem();
+            this.ParentWindow.ExitWindow();
+            this.ParentWindow.ParentWindow.MoveToLastItem();
         }
     }
 }

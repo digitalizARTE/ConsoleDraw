@@ -13,47 +13,46 @@ namespace ConsoleDraw
         public int _x;
         public int _y;
         public Timer blink;
-        public Char blinkLetter;
+        public char blinkLetter;
         public ConsoleColor _background;
         private bool visible;
 
         public void PlaceCursor(int x, int y, char letter, ConsoleColor background = ConsoleColor.Blue)
         {
-            visible = true;
-            _x = x;
-            _y = y;
-            blinkLetter = letter == '\r' || letter == '\n' ? ' ' : letter;
-            _background = background;
+            this.visible = true;
+            this._x = x;
+            this._y = y;
+            this.blinkLetter = letter == '\r' || letter == '\n' ? ' ' : letter;
+            this._background = background;
             WindowManager.WirteText("_", x, y, ConsoleColor.White, background);
 
-            blink = new Timer(500); 
-            blink.Elapsed += new ElapsedEventHandler(BlinkCursor);
-            blink.Enabled = true;
+            this.blink = new Timer(500);
+            this.blink.Elapsed += new ElapsedEventHandler(this.BlinkCursor);
+            this.blink.Enabled = true;
         }
 
         public void RemoveCursor()
         {
-            if (visible)
+            if (this.visible)
             {
-                WindowManager.WirteText(" ", _x, _y, ConsoleColor.White, _background);
-                if (blink != null)
-                    blink.Dispose();
-                visible = false;
+                WindowManager.WirteText(" ", this._x, this._y, ConsoleColor.White, this._background);
+                if (this.blink != null) this.blink.Dispose();
+                this.visible = false;
             }
             
         }
 
         void BlinkCursor(object sender, ElapsedEventArgs e)
         {
-            if (_cursorShow)
+            if (this._cursorShow)
             {
-                WindowManager.WirteText(blinkLetter.ToString(), _x, _y, ConsoleColor.White, _background);
-                _cursorShow = false;
+                WindowManager.WirteText(this.blinkLetter.ToString(), this._x, this._y, ConsoleColor.White, this._background);
+                this._cursorShow = false;
             }
             else
             {
-                WindowManager.WirteText("_", _x, _y, ConsoleColor.White, _background);
-                _cursorShow = true;
+                WindowManager.WirteText("_", this._x, this._y, ConsoleColor.White, this._background);
+                this._cursorShow = true;
             }
         }
 

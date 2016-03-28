@@ -9,160 +9,229 @@ namespace ConsoleDraw.Windows.Base
 {
     public class Window : IWindow
     {
-        public Boolean Exit;
+        public bool Exit;
         protected IInput CurrentlySelected;
 
         public int PostionX { get; private set; }
         public int PostionY { get; private set; }
-        public int Width {get; private set;}
+        public int Width { get; private set; }
         public int Height { get; private set; }
 
         public ConsoleColor BackgroundColour = ConsoleColor.Gray;
-        
+
         public List<IInput> Inputs = new List<IInput>();
 
         public Window(int postionX, int postionY, int width, int height, Window parentWindow)
         {
-            PostionY = postionY;
-            PostionX = postionX;
-            Width = width;
-            Height = height;
+            this.PostionY = postionY;
+            this.PostionX = postionX;
+            this.Width = width;
+            this.Height = height;
 
-            ParentWindow = parentWindow;
+            this.ParentWindow = parentWindow;
         }
 
         public void Draw()
         {
-            if (ParentWindow != null)
-                ParentWindow.Draw();
+            if (this.ParentWindow != null)
+            {
+                this.ParentWindow.Draw();
+            }
 
-            ReDraw();
+            this.ReDraw();
 
-                foreach (var input in Inputs)
-                    input.Draw();
+            foreach (IInput input in this.Inputs)
+            {
+                input.Draw();
+            }
 
-                if (CurrentlySelected != null)
-                    CurrentlySelected.Select();
-               // SetSelected();
+            if (this.CurrentlySelected != null)
+            {
+                this.CurrentlySelected.Select();
+            }
+            // SetSelected();
         }
 
         public override void ReDraw()
         {
-            
+
         }
         
-
         public void MainLoop()
         {
-            while (!Exit && !ProgramInfo.ExitProgram)
+            while (!this.Exit && !ProgramInfo.ExitProgram)
             {
-                var input = ReadKey();
-
+                ConsoleKeyInfo input = ReadKey();
                 if (input.Key == ConsoleKey.Tab)
-                    CurrentlySelected.Tab();
+                {
+                    if ((input.Modifiers & ConsoleModifiers.Shift) != 0)
+                    {
+                        this.CurrentlySelected.UnTab();
+                    }
+                    else
+                    {
+                        this.CurrentlySelected.Tab();
+                    }
+                }
                 else if (input.Key == ConsoleKey.Enter)
-                    CurrentlySelected.Enter();
+                {
+                    this.CurrentlySelected.Enter();
+                }
                 else if (input.Key == ConsoleKey.LeftArrow)
-                    CurrentlySelected.CursorMoveLeft();
+                {
+                    this.CurrentlySelected.CursorMoveLeft();
+                }
                 else if (input.Key == ConsoleKey.RightArrow)
-                    CurrentlySelected.CursorMoveRight();
+                {
+                    this.CurrentlySelected.CursorMoveRight();
+                }
                 else if (input.Key == ConsoleKey.UpArrow)
-                    CurrentlySelected.CursorMoveUp();
+                {
+                    this.CurrentlySelected.CursorMoveUp();
+                }
                 else if (input.Key == ConsoleKey.DownArrow)
-                    CurrentlySelected.CursorMoveDown();
+                {
+                    this.CurrentlySelected.CursorMoveDown();
+                }
                 else if (input.Key == ConsoleKey.Backspace)
-                    CurrentlySelected.BackSpace();
+                {
+                    this.CurrentlySelected.BackSpace();
+                }
                 else if (input.Key == ConsoleKey.Home)
-                    CurrentlySelected.CursorToStart();
+                {
+                    this.CurrentlySelected.CursorToStart();
+                }
                 else if (input.Key == ConsoleKey.End)
-                    CurrentlySelected.CursorToEnd();
+                {
+                    this.CurrentlySelected.CursorToEnd();
+                }
                 else
-                    CurrentlySelected.AddLetter((Char)input.KeyChar); // Letter(input.KeyChar);
+                {
+                    this.CurrentlySelected.AddLetter((char)input.KeyChar); // Letter(input.KeyChar);
+                }
             }
         }
 
         public void SelectFirstItem()
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
                 return;
 
-            CurrentlySelected = Inputs.First(x => x.Selectable);
+            this.CurrentlySelected = this.Inputs.First(x => x.Selectable);
 
-            SetSelected();
+            this.SetSelected();
         }
 
-        public void SelectItemByID(String Id)
+        public void SelectItemByID(string Id)
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable))
+            {
+                //No Selectable inputs on page
                 return;
+            }
 
-            var newSelectedInput = Inputs.FirstOrDefault(x => x.ID == Id);
-            if (newSelectedInput == null) //No Input with this ID
+            IInput newSelectedInput = this.Inputs.FirstOrDefault(x => x.ID == Id);
+            if (newSelectedInput == null)
+            {
+                //No Input with this ID
                 return;
+            }
 
-            CurrentlySelected = newSelectedInput;
+            this.CurrentlySelected = newSelectedInput;
 
-            SetSelected();
+            this.SetSelected();
         }
 
         public void MoveToNextItem()
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable))
+            {
+                //No Selectable inputs on page
                 return;
+            }
 
-            if (Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+            if (this.Inputs.Count(x => x.Selectable) == 1)
+            {
+                //Only one selectable input on page, thus no point chnaging it
                 return;
+            }
 
-            var IndexOfCurrent = Inputs.IndexOf(CurrentlySelected);
+            int IndexOfCurrent = this.Inputs.IndexOf(this.CurrentlySelected);
 
             while (true)
             {
-                IndexOfCurrent = MoveIndexAlongOne(IndexOfCurrent);
+                IndexOfCurrent = this.MoveIndexAlongOne(IndexOfCurrent);
 
-                if (Inputs[IndexOfCurrent].Selectable)
+                if (this.Inputs[IndexOfCurrent].Selectable)
+                {
+                    break;
+                }
+            }
+
+            this.CurrentlySelected = this.Inputs[IndexOfCurrent];
+
+            this.SetSelected();
+        }
+
+        public void MoveToPrevItem()
+        {
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+                return;
+
+            if (this.Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+                return;
+
+            int IndexOfCurrent = this.Inputs.IndexOf(this.CurrentlySelected);
+
+            while (true)
+            {
+                IndexOfCurrent = this.MoveIndexBackOne(IndexOfCurrent);
+
+                if (this.Inputs[IndexOfCurrent].Selectable)
                     break;
             }
-            CurrentlySelected = Inputs[IndexOfCurrent];
 
-            SetSelected();
+            this.CurrentlySelected = this.Inputs[IndexOfCurrent];
+
+            this.SetSelected();
         }
 
         public void MoveToLastItem()
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
                 return;
 
-            if (Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+            if (this.Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
                 return;
 
-            var IndexOfCurrent = Inputs.IndexOf(CurrentlySelected);
+            int IndexOfCurrent = this.Inputs.IndexOf(this.CurrentlySelected);
 
             while (true)
             {
-                IndexOfCurrent = MoveIndexBackOne(IndexOfCurrent);
+                IndexOfCurrent = this.MoveIndexBackOne(IndexOfCurrent);
 
-                if (Inputs[IndexOfCurrent].Selectable)
+                if (this.Inputs[IndexOfCurrent].Selectable)
                     break;
             }
-            CurrentlySelected = Inputs[IndexOfCurrent];
+            this.CurrentlySelected = this.Inputs[IndexOfCurrent];
 
-            SetSelected();
+            this.SetSelected();
         }
 
         public void MovetoNextItemRight(int startX, int startY, int searchHeight)
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
                 return;
 
-            if (Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+            if (this.Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
                 return;
 
             IInput nextItem = null;
-            while (nextItem == null && startY <= PostionY + Width)
+            while (nextItem == null && startY <= this.PostionY + this.Width)
             {
-                foreach (var input in Inputs.Where(x => x.Selectable && x != CurrentlySelected))
+                foreach (IInput input in this.Inputs.Where(x => x.Selectable && x != this.CurrentlySelected))
                 {
-                    var overlap = DoAreasOverlap(startX, startY, searchHeight, 1, input.Xpostion, input.Ypostion, input.Height, input.Width);
+                    bool overlap = this.DoAreasOverlap(startX, startY, searchHeight, 1, input.Xpostion, input.Ypostion, input.Height, input.Width);
                     if (overlap)
                     {
                         nextItem = input;
@@ -174,28 +243,28 @@ namespace ConsoleDraw.Windows.Base
 
             if (nextItem == null) //No element found to the right
             {
-                MoveToNextItem();
+                this.MoveToNextItem();
                 return;
             }
 
-            CurrentlySelected = nextItem;
-            SetSelected();
+            this.CurrentlySelected = nextItem;
+            this.SetSelected();
         }
 
         public void MovetoNextItemLeft(int startX, int startY, int searchHeight)
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
                 return;
 
-            if (Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+            if (this.Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
                 return;
 
             IInput nextItem = null;
-            while (nextItem == null && startY > PostionY)
+            while (nextItem == null && startY > this.PostionY)
             {
-                foreach (var input in Inputs.Where(x => x.Selectable && x != CurrentlySelected))
+                foreach (IInput input in this.Inputs.Where(x => x.Selectable && x != this.CurrentlySelected))
                 {
-                    var overlap = DoAreasOverlap(startX, startY - 1, searchHeight, 1, input.Xpostion, input.Ypostion, input.Height, input.Width);
+                    bool overlap = this.DoAreasOverlap(startX, startY - 1, searchHeight, 1, input.Xpostion, input.Ypostion, input.Height, input.Width);
                     if (overlap)
                     {
                         nextItem = input;
@@ -207,28 +276,28 @@ namespace ConsoleDraw.Windows.Base
 
             if (nextItem == null) //No element found
             {
-                MoveToLastItem();
+                this.MoveToLastItem();
                 return;
             }
 
-            CurrentlySelected = nextItem;
-            SetSelected();
+            this.CurrentlySelected = nextItem;
+            this.SetSelected();
         }
 
         public void MovetoNextItemDown(int startX, int startY, int searchWidth)
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
                 return;
 
-            if (Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+            if (this.Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
                 return;
 
             IInput nextItem = null;
-            while (nextItem == null && startX <= PostionX + Height)
+            while (nextItem == null && startX <= this.PostionX + this.Height)
             {
-                foreach (var input in Inputs.Where(x => x.Selectable && x != CurrentlySelected))
+                foreach (IInput input in this.Inputs.Where(x => x.Selectable && x != this.CurrentlySelected))
                 {
-                    var overlap = DoAreasOverlap(startX, startY, 1, searchWidth, input.Xpostion, input.Ypostion, input.Height, input.Width);
+                    bool overlap = this.DoAreasOverlap(startX, startY, 1, searchWidth, input.Xpostion, input.Ypostion, input.Height, input.Width);
                     if (overlap)
                     {
                         nextItem = input;
@@ -240,28 +309,28 @@ namespace ConsoleDraw.Windows.Base
 
             if (nextItem == null) //No element found
             {
-                MoveToNextItem();
+                this.MoveToNextItem();
                 return;
             }
 
-            CurrentlySelected = nextItem;
-            SetSelected();
+            this.CurrentlySelected = nextItem;
+            this.SetSelected();
         }
 
         public void MovetoNextItemUp(int startX, int startY, int searchWidth)
         {
-            if (Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
+            if (this.Inputs.All(x => !x.Selectable)) //No Selectable inputs on page
                 return;
 
-            if (Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
+            if (this.Inputs.Count(x => x.Selectable) == 1) //Only one selectable input on page, thus no point chnaging it
                 return;
 
             IInput nextItem = null;
-            while (nextItem == null && startX > PostionX)
+            while (nextItem == null && startX > this.PostionX)
             {
-                foreach (var input in Inputs.Where(x => x.Selectable && x != CurrentlySelected))
+                foreach (IInput input in this.Inputs.Where(x => x.Selectable && x != this.CurrentlySelected))
                 {
-                    var overlap = DoAreasOverlap(startX - 1, startY, 1, searchWidth, input.Xpostion, input.Ypostion, input.Height, input.Width);
+                    bool overlap = this.DoAreasOverlap(startX - 1, startY, 1, searchWidth, input.Xpostion, input.Ypostion, input.Height, input.Width);
                     if (overlap)
                     {
                         nextItem = input;
@@ -273,25 +342,25 @@ namespace ConsoleDraw.Windows.Base
 
             if (nextItem == null) //No element found
             {
-                MoveToLastItem();
+                this.MoveToLastItem();
                 return;
             }
 
-            CurrentlySelected = nextItem;
-            SetSelected();
+            this.CurrentlySelected = nextItem;
+            this.SetSelected();
         }
 
 
         private bool DoAreasOverlap(int areaOneX, int areaOneY, int areaOneHeight, int areaOneWidth, int areaTwoX, int areaTwoY, int areaTwoHeight, int areaTwoWidth)
         {
-            var areaOneEndX = areaOneX + areaOneHeight - 1;
-            var areaOneEndY = areaOneY + areaOneWidth - 1;
-            var areaTwoEndX = areaTwoX + areaTwoHeight - 1;
-            var areaTwoEndY = areaTwoY + areaTwoWidth - 1;
+            int areaOneEndX = areaOneX + areaOneHeight - 1;
+            int areaOneEndY = areaOneY + areaOneWidth - 1;
+            int areaTwoEndX = areaTwoX + areaTwoHeight - 1;
+            int areaTwoEndY = areaTwoY + areaTwoWidth - 1;
 
-            var overlapsVertically = false;
+            bool overlapsVertically = false;
             //Check if overlap vertically
-            if (areaOneX >= areaTwoX && areaOneX < areaTwoEndX ) //areaOne starts in areaTwo
+            if (areaOneX >= areaTwoX && areaOneX < areaTwoEndX) //areaOne starts in areaTwo
                 overlapsVertically = true;
             else if (areaOneEndX >= areaTwoX && areaOneEndX <= areaTwoEndX) //areaOne ends in areaTwo
                 overlapsVertically = true;
@@ -302,7 +371,7 @@ namespace ConsoleDraw.Windows.Base
             if (!overlapsVertically) //If it does not overlap vertically, then it does not overlap.
                 return false;
 
-            var overlapsHorizontally = false;
+            bool overlapsHorizontally = false;
             //Check if overlap Horizontally
             if (areaOneY >= areaTwoY && areaOneY < areaTwoEndY) //areaOne starts in areaTwo
                 overlapsHorizontally = true;
@@ -320,7 +389,7 @@ namespace ConsoleDraw.Windows.Base
 
         private int MoveIndexAlongOne(int index)
         {
-            if (Inputs.Count() == index + 1)
+            if (this.Inputs.Count() == index + 1)
                 return 0;
 
             return index + 1;
@@ -329,38 +398,39 @@ namespace ConsoleDraw.Windows.Base
         private int MoveIndexBackOne(int index)
         {
             if (index == 0)
-                return Inputs.Count() - 1;
+                return this.Inputs.Count() - 1;
 
             return index - 1;
         }
 
         private void SetSelected()
         {
-            Inputs.ForEach(x => x.Unselect());
+            this.Inputs.ForEach(x => x.Unselect());
 
-            if(CurrentlySelected != null)
-                CurrentlySelected.Select();
+            if (this.CurrentlySelected != null) this.CurrentlySelected.Select();
         }
 
         private static ConsoleKeyInfo ReadKey()
         {
             ConsoleKeyInfo input = Console.ReadKey(true);
-          
+
             return input;
         }
 
-        public IInput GetInputById(String Id)
+        public IInput GetInputById(string Id)
         {
-            return Inputs.FirstOrDefault(x => x.ID == Id);
+            return this.Inputs.FirstOrDefault(x => x.ID == Id);
         }
 
         public void ExitWindow()
         {
-            Exit = true;
-            if (ParentWindow != null)
-                ParentWindow.Draw();
+            this.Exit = true;
+            if (this.ParentWindow != null)
+            {
+                this.ParentWindow.Draw();
+            }
             //else
-                //System.Environment.Exit(1);
+            //System.Environment.Exit(1);
         }
     }
 }

@@ -13,16 +13,16 @@ namespace ConsoleDraw
         {
             Console.BackgroundColor = colour;
 
-            for (var i = startX; i < endX; i++)
+            for (int i = startX; i < endX; i++)
             {
                 Console.CursorLeft = startY;
                 Console.CursorTop = i;
 
-                Console.WriteLine("".PadLeft(endY - startY));
+                Console.WriteLine(string.Empty.PadLeft(endY - startY));
             }
         }
 
-        public static void WirteText(String text, int startX, int startY, ConsoleColor textColour, ConsoleColor backgroundColour)
+        public static void WirteText(string text, int startX, int startY, ConsoleColor textColour, ConsoleColor backgroundColour)
         {
             Console.CursorLeft = startY;
             Console.CursorTop = startX;
@@ -31,7 +31,6 @@ namespace ConsoleDraw
             Console.ForegroundColor = textColour;
 
             Console.Write(text);
-
         }
 
 
@@ -46,12 +45,18 @@ namespace ConsoleDraw
         {
             startingBufferHeight = Console.BufferHeight;
 
-            var whereToMove = Console.CursorTop + 1; //Move one line below visible
-            if (whereToMove < Console.WindowHeight) //If cursor is not on bottom line of visible
+            int whereToMove = Console.CursorTop + 1; //Move one line below visible
+            if (whereToMove < Console.WindowHeight)
+            {
+                //If cursor is not on bottom line of visible
                 whereToMove = Console.WindowHeight + 1;
+            }
 
-            if (Console.BufferHeight < whereToMove + Console.WindowHeight) //Buffer is too small
+            if (Console.BufferHeight < whereToMove + Console.WindowHeight)
+            {
+                //Buffer is too small
                 Console.BufferHeight = whereToMove + Console.WindowHeight;
+            }
 
             Console.MoveBufferArea(0, 0, Console.WindowWidth, Console.WindowHeight, 0, whereToMove);
 
@@ -70,9 +75,13 @@ namespace ConsoleDraw
             Console.ForegroundColor = startingForegroundColour;
             Console.BackgroundColor = startingBackgroundColour;
 
-            var whereToGet = startingX + 1; //Move one line below visible
-            if (whereToGet < Console.WindowHeight) //If cursor is not on bottom line of visible
+            int whereToGet = startingX + 1; //Move one line below visible
+            if (whereToGet < Console.WindowHeight)
+            {
+                //If cursor is not on bottom line of visible
                 whereToGet = Console.WindowHeight + 1;
+            }
+
             Console.MoveBufferArea(0, whereToGet, Console.WindowWidth, Console.WindowHeight, 0, 0);
 
             Console.CursorTop = startingX;
@@ -81,7 +90,6 @@ namespace ConsoleDraw
             Console.CursorVisible = true;
             Console.BufferHeight = startingBufferHeight;
             //Console.WriteLine();
-
         }
 
         public static void UpdateWindow(int width, int height)
@@ -111,10 +119,10 @@ namespace ConsoleDraw
             }
 
             Console.BackgroundColor = ConsoleColor.Gray;
-            WindowManager.DrawColourBlock(Console.BackgroundColor, 0, 0, Console.WindowHeight, Console.WindowWidth); //Flush Buffer
+            DrawColourBlock(Console.BackgroundColor, 0, 0, Console.WindowHeight, Console.WindowWidth); //Flush Buffer
         }
 
-        public static void SetWindowTitle(String title)
+        public static void SetWindowTitle(string title)
         {
             Console.Title = title;
         }
