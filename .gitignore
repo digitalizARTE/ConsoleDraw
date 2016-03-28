@@ -219,3 +219,9 @@ pip-log.txt
 *.pdb
 *.cache
 *.exe
+*.pdb
+*.suo
+*.dll
+*.txt
+*.pdb
+*.cache
